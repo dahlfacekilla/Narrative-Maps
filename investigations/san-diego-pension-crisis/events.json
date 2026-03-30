@@ -1,0 +1,188 @@
+[
+  {
+    "id": "mp1",
+    "label": "Manager's Proposal 1",
+    "description": "First pension underfunding agreement. Approved 1996 when SDCERS was 92.3% funded. Increased pension multiplier from 1.45% to 2%, created service credit purchase system, and established DROP (Deferred Retirement Option Plan). Set the structural precedent for underfunding.",
+    "date": "1996",
+    "order": 1,
+    "chapter_id": "underfunding",
+    "confidence": "verified",
+    "tags": ["underfunding", "legislation", "key-event"],
+    "sources": ["https://docs.sandiego.gov/legalopinions/LO-2007-2.pdf"],
+    "notes": "System was 92.3% funded at time of approval — the last point of relative health before the crisis."
+  },
+  {
+    "id": "mp2-board-vote",
+    "label": "MP-2 Pension Board Vote",
+    "description": "SDCERS pension board voted July 11, 2002 to approve the city's Manager's Proposal 2. Shipione raised concerns about the 'snake in the garden' accounting trick during the meeting. Ron Saathoff's vote was secured through a special benefit quid pro quo, per federal prosecutors.",
+    "date": "2002-07-11",
+    "order": 1,
+    "chapter_id": "underfunding",
+    "confidence": "verified",
+    "tags": ["key-event", "vote", "pension-board", "mp2"],
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/",
+      "https://en.wikipedia.org/wiki/San_Diego_pension_scandal"
+    ],
+    "notes": "Shipione's 'snake in the garden' phrase described a mechanism to reduce city contributions while increasing benefits."
+  },
+  {
+    "id": "mp2-council-vote",
+    "label": "City Council MP-2 Vote",
+    "description": "San Diego City Council voted November 18, 2002 to approve the benefit increases under Manager's Proposal 2. Donna Frye cast the only dissenting vote after being warned by Diann Shipione. The vote locked in increased benefits while authorizing continued pension underfunding.",
+    "date": "2002-11-18",
+    "order": 1,
+    "chapter_id": "underfunding",
+    "confidence": "verified",
+    "tags": ["key-event", "vote", "city-council", "mp2"],
+    "sources": ["https://en.wikipedia.org/wiki/San_Diego_pension_scandal"],
+    "notes": "Only Donna Frye voted no."
+  },
+  {
+    "id": "bond-offerings-2002-2003",
+    "label": "Bond Offerings 2002–2003",
+    "description": "The City of San Diego issued five municipal bond offerings between 2002 and 2003, raising approximately $260 million. Each offering contained materially false and misleading disclosures that omitted material information about the pension system's underfunded status and the city's retiree health care obligations.",
+    "date": "2002",
+    "order": 2,
+    "chapter_id": "bond-fraud",
+    "confidence": "verified",
+    "tags": ["key-event", "bond-fraud", "false-disclosure"],
+    "sources": ["https://www.sec.gov/news/press/2006/2006-170.htm"],
+    "notes": "Five offerings total. City raised ~$260M while concealing pension obligations from investors."
+  },
+  {
+    "id": "public-disclosure-2004",
+    "label": "Public Pension Disclosure",
+    "description": "On January 27, 2004, the City of San Diego publicly admitted errors and omissions in financial statements used in bond offerings. This disclosure triggered SEC and FBI/U.S. Attorney investigations.",
+    "date": "2004-01-27",
+    "order": 1,
+    "chapter_id": "exposure-fallout",
+    "confidence": "verified",
+    "tags": ["key-event", "disclosure"],
+    "sources": ["https://en.wikipedia.org/wiki/San_Diego_pension_scandal"],
+    "notes": "The triggering event for all subsequent enforcement actions."
+  },
+  {
+    "id": "sp-rating-withdrawal",
+    "label": "S&P Bond Rating Withdrawal",
+    "description": "Standard & Poor's withdrew San Diego's AA-minus bond rating in September 2004 after the pension liability revelation. The city was effectively locked out of the municipal bond market for four years, unable to borrow for infrastructure.",
+    "date": "2004-09",
+    "order": 2,
+    "chapter_id": "exposure-fallout",
+    "confidence": "verified",
+    "tags": ["consequence", "financial"],
+    "sources": ["https://www.pionline.com/article/20080516/ONLINE/939035460/s-p-reinstates-san-diego-city-bond-ratings"],
+    "notes": "The city earned the nickname 'Enron by the Sea' around this period."
+  },
+  {
+    "id": "murphy-resignation",
+    "label": "Mayor Murphy Resignation",
+    "description": "Mayor Dick Murphy announced his resignation April 25, 2005, effective July 15, 2005, amid pension scandal and federal investigations. Time magazine had named him one of the nation's three worst big-city mayors.",
+    "date": "2005-04-25",
+    "order": 1,
+    "chapter_id": "exposure-fallout",
+    "confidence": "verified",
+    "tags": ["key-event", "consequence"],
+    "sources": [
+      "https://en.wikipedia.org/wiki/Dick_Murphy",
+      "https://www.npr.org/2005/05/02/4627309/san-diego-mayor-resigns-amid-finance-scandal"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "da-charges-2005",
+    "label": "DA Files Felony Charges",
+    "description": "DA Bonnie Dumanis filed felony charges against six former and current city officials on May 17, 2005 under California Government Code 1090 (conflict-of-interest). All charges ultimately dismissed May 2010 after CA Supreme Court rejected the legal theory.",
+    "date": "2005-05-17",
+    "order": 2,
+    "chapter_id": "exposure-fallout",
+    "confidence": "verified",
+    "tags": ["key-event", "prosecution"],
+    "sources": ["https://voiceofsandiego.org/2005/05/17/six-sd-officials-charged-in-pension-scandal/"],
+    "notes": ""
+  },
+  {
+    "id": "federal-indictment-2006",
+    "label": "Federal Indictment",
+    "description": "Federal grand jury returned indictments against five pension officials in January 2006: Saathoff (20 counts), Lexin, Webster, Grissom, and Chapin (16 counts each) on fraud and conspiracy charges related to the Saathoff special benefit quid pro quo.",
+    "date": "2006-01",
+    "order": 1,
+    "chapter_id": "prosecution",
+    "confidence": "verified",
+    "tags": ["key-event", "prosecution", "federal"],
+    "sources": ["https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"],
+    "notes": ""
+  },
+  {
+    "id": "sec-order-city-2006",
+    "label": "SEC Orders City Sanctioned",
+    "description": "SEC entered an order in November 2006 finding that the City of San Diego committed securities fraud by failing to disclose pension and retiree health care funding problems in five bond offerings (2002–2003) that raised $260 million.",
+    "date": "2006-11",
+    "order": 2,
+    "chapter_id": "prosecution",
+    "confidence": "verified",
+    "tags": ["key-event", "sec", "enforcement"],
+    "sources": ["https://www.sec.gov/news/press/2006/2006-170.htm"],
+    "notes": ""
+  },
+  {
+    "id": "sec-auditor-charges-2007",
+    "label": "SEC Charges Auditor Saiz",
+    "description": "SEC filed civil fraud action against Thomas J. Saiz and firm CJO on December 11, 2007 for issuing unqualified audit reports that failed GAAS standards and omitted material pension information. Settled with $15,000 penalty.",
+    "date": "2007-12-11",
+    "order": 1,
+    "chapter_id": "prosecution",
+    "confidence": "verified",
+    "tags": ["sec", "enforcement", "auditor"],
+    "sources": ["https://www.sec.gov/news/press/2007/2007-257.htm"],
+    "notes": ""
+  },
+  {
+    "id": "sec-official-charges-2008",
+    "label": "SEC Charges Five Officials",
+    "description": "SEC charged five former San Diego city officials with securities fraud on April 7, 2008: Uberuaga, Ryan, Frazier, Vattimo, and Webster for participating in drafting and certifying false and misleading bond disclosure documents.",
+    "date": "2008-04-07",
+    "order": 1,
+    "chapter_id": "prosecution",
+    "confidence": "verified",
+    "tags": ["key-event", "sec", "enforcement"],
+    "sources": ["https://www.sec.gov/news/press/2008/2008-57.htm"],
+    "notes": "First time SEC charged individual city officials in a muni bond fraud case."
+  },
+  {
+    "id": "sp-reinstatement-2008",
+    "label": "S&P Reinstates Bond Rating",
+    "description": "Standard & Poor's reinstated San Diego's bond rating in 2008 at A with positive outlook, ending the city's four-year exclusion from the public bond markets.",
+    "date": "2008",
+    "order": 2,
+    "chapter_id": "prosecution",
+    "confidence": "verified",
+    "tags": ["consequence", "financial"],
+    "sources": ["https://www.pionline.com/article/20080516/ONLINE/939035460/s-p-reinstates-san-diego-city-bond-ratings"],
+    "notes": "Rating reinstated at A, lower than the pre-scandal AA-minus."
+  },
+  {
+    "id": "federal-charges-dismissed-2010",
+    "label": "Federal Criminal Charges Dismissed",
+    "description": "U.S. District Judge Roger Benitez dismissed all federal criminal charges against the five pension officials on April 8, 2010, ruling the honest services fraud statute was unconstitutionally vague and failed to give fair warning that the defendants' conduct could constitute federal fraud.",
+    "date": "2010-04-08",
+    "order": 1,
+    "chapter_id": "prosecution",
+    "confidence": "verified",
+    "tags": ["key-event", "legal-outcome"],
+    "sources": ["https://www.sandiegouniontribune.com/sdut-five-cleared-in-pension-case-2010apr08-htmlstory.html"],
+    "notes": "U.S. Supreme Court later affirmed in Skilling v. United States (June 2010) that the honest services statute was too vague."
+  },
+  {
+    "id": "sec-settlement-2010",
+    "label": "SEC Settlement with Four Officials",
+    "description": "Four officials (Uberuaga, Ryan, Frazier, Vattimo) settled SEC securities fraud charges on October 27, 2010 without admitting or denying wrongdoing, paying a combined $80,000 in penalties. Historic first: financial penalties against city officials in municipal bond fraud.",
+    "date": "2010-10-27",
+    "order": 2,
+    "chapter_id": "prosecution",
+    "confidence": "verified",
+    "tags": ["key-event", "sec", "settlement"],
+    "sources": ["https://www.sec.gov/news/press/2010/2010-204.htm"],
+    "notes": "Combined penalties totaled $80,000 — widely considered modest given the scale of the fraud."
+  }
+]

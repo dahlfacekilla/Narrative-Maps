@@ -1,0 +1,30 @@
+[
+  {
+    "id": "underfunding",
+    "label": "The Underfunding Scheme",
+    "description": "City officials design and pass pension benefit increases without adequate actuarial funding, establishing a structural deficit that will grow for years.",
+    "order": 1,
+    "color": "#4a90d9"
+  },
+  {
+    "id": "bond-fraud",
+    "label": "Bond Fraud and Concealment",
+    "description": "The city issues five municipal bond offerings raising $260 million, each containing materially false and misleading disclosures that omit the pension funding crisis.",
+    "order": 2,
+    "color": "#e67e22"
+  },
+  {
+    "id": "exposure-fallout",
+    "label": "Exposure and Political Fallout",
+    "description": "The pension crisis becomes public, triggering SEC and federal investigations. S&P withdraws the city's bond rating. Mayor Murphy resigns.",
+    "order": 3,
+    "color": "#9b59b6"
+  },
+  {
+    "id": "prosecution",
+    "label": "Prosecution and Collapse",
+    "description": "Federal and state criminal prosecutions collapse. The SEC secures historic financial penalties against city officials — the first in a municipal bond fraud case.",
+    "order": 4,
+    "color": "#e74c3c"
+  }
+]
