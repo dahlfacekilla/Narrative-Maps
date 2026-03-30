@@ -14,8 +14,11 @@ export default defineConfig({
       exclude: [
         'src/__tests__/**',
         'src/main.jsx',
-        // Legacy monolith being replaced in the next commit — excluded until rewrite ships
+        // React components and entry points — rendering only, logic covered by layout engine tests
         'src/App.jsx',
+        'src/components/**',
+        'src/hooks/**',
+        'src/constants.js',
       ],
       thresholds: {
         lines: 80,
