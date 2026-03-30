@@ -21,12 +21,13 @@ function initials(label) {
 
 // ─── EntityEntry ─────────────────────────────────────────────────────────────
 
-function EntityEntry({ row }) {
+function EntityEntry({ row, onEntityClick }) {
   const { entity, affiliation, y, height } = row
   const color = affiliation.color
 
   return (
     <div
+      onClick={() => onEntityClick?.(entity.id)}
       style={{
         position: 'absolute',
         top: y,
@@ -38,6 +39,7 @@ function EntityEntry({ row }) {
         gap: 8,
         padding: '0 10px 0 12px',
         boxSizing: 'border-box',
+        cursor: onEntityClick ? 'pointer' : 'default',
       }}
     >
       {/* Portrait circle / initials */}
@@ -102,7 +104,7 @@ function EntityEntry({ row }) {
 
 // ─── SwimlanePanel ────────────────────────────────────────────────────────────
 
-export function SwimlanePanel({ rows, groupBands, canvasHeight }) {
+export function SwimlanePanel({ rows, groupBands, canvasHeight, onEntityClick }) {
   return (
     <div
       style={{
@@ -149,7 +151,7 @@ export function SwimlanePanel({ rows, groupBands, canvasHeight }) {
 
       {/* Entity rows */}
       {rows.map(row => (
-        <EntityEntry key={row.entityId} row={row} />
+        <EntityEntry key={row.entityId} row={row} onEntityClick={onEntityClick} />
       ))}
     </div>
   )

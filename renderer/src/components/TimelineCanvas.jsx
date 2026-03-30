@@ -6,9 +6,12 @@
  *  2. Chapter header bars
  *  3. Axis ticks
  *  4. Event markers (date + label above the rows)
- *  5. Span relationships (event_id: null, drawn as thin horizontal lines)
+ *  5. Span relationships (event_id: null — stubbed for later)
  *  6. Relationship arcs (bezier curves within event zones)
  *  7. Entity icons (circles with initials at event-row intersections)
+ *
+ * Zoom is applied via SVG attribute scaling + internal <g transform="scale">.
+ * Focus mode dims non-focused events; event/entity selection dims non-selected events.
  */
 
 import { useMemo } from 'react'
@@ -20,12 +23,7 @@ import {
   ENTITY_ICON_SIZE,
   ENTITY_ICON_RING,
   ARC_STROKE_WIDTH,
-  Z_SWIMLANE_BG,
-  Z_CHAPTER_BAR,
-  Z_AXIS_TICK,
-  Z_EVENT_MARKER,
-  Z_ARC_EDGE,
-  Z_ENTITY_ICON,
+  OPACITY_DIMMED,
 } from '../constants.js'
 import { formatDateLabel } from '../layout/timeAxis.js'
 import { HEADER_HEIGHT } from '../layout/swimlanes.js'
@@ -34,46 +32,24 @@ import { HEADER_HEIGHT } from '../layout/swimlanes.js'
 
 /**
  * Build an SVG path string for a relationship connector.
- *
- * Directed relationships get a rightward-bowing C-curve (PRD §5.5.1).
- * Undirected get a straight line (PRD §5.5.2).
- *
- * @param {number} x1 - from-entity center X
- * @param {number} y1 - from-entity center Y
- * @param {number} x2 - to-entity center X
- * @param {number} y2 - to-entity center Y
- * @param {boolean} isDirected
- * @returns {string}
+ * Directed: rightward-bowing C-curve (PRD §5.5.1).
+ * Undirected: straight line (PRD §5.5.2).
  */
 function arcPath(x1, y1, x2, y2, isDirected) {
   const dy = y2 - y1
-  const dx = x2 - x1
 
-  // Same row or undirected: straight line
-  if (!isDirected || (Math.abs(dy) < 8 && Math.abs(dx) < 8)) {
+  if (!isDirected || Math.abs(dy) < 8) {
     return `M ${x1} ${y1} L ${x2} ${y2}`
   }
 
-  if (Math.abs(dy) < 8) {
-    // Nearly horizontal directed (same swimlane row)
-    return `M ${x1} ${y1} L ${x2} ${y2}`
-  }
-
-  // Rightward-bowing cubic Bézier.
-  // Both control points are pushed to the right of the midpoint.
-  // The bow scales with vertical distance (PRD §5.5.5).
+  // Rightward-bowing cubic Bézier (PRD §5.5.1, §5.5.5)
   const bow = Math.min(40, Math.abs(dy) * 0.18) + 14
   const midX = (x1 + x2) / 2
 
-  const cx1 = midX + bow
-  const cy1 = y1
-  const cx2 = midX + bow
-  const cy2 = y2
-
-  return `M ${x1} ${y1} C ${cx1} ${cy1} ${cx2} ${cy2} ${x2} ${y2}`
+  return `M ${x1} ${y1} C ${midX + bow} ${y1} ${midX + bow} ${y2} ${x2} ${y2}`
 }
 
-// ─── Initials helper ──────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function initials(label) {
   return label
@@ -108,7 +84,6 @@ function ArrowMarkers() {
           <polygon points="0 0, 8 3.5, 0 7" fill={color} opacity="0.85" />
         </marker>
       ))}
-      {/* Fallback for unknown types */}
       <marker id="arrow-default" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
         <polygon points="0 0, 8 3.5, 0 7" fill="#888" opacity="0.7" />
       </marker>
@@ -122,8 +97,13 @@ export function TimelineCanvas({
   layout,
   events,
   relationships,
+  zoom,
   selectedEventId,
+  selectedEntityId,
   onSelectEvent,
+  onSelectEntity,
+  focusMode,
+  focusedEventId,
 }) {
   const {
     rows,
@@ -137,17 +117,12 @@ export function TimelineCanvas({
     axisTicks,
   } = layout
 
-  // Build entity row lookup (entityId → row)
   const rowByEntityId = useMemo(() => {
     const map = new Map()
     for (const row of rows) map.set(row.entityId, row)
     return map
   }, [rows])
 
-  // SVG total width: canvas content + left padding
-  const svgWidth = canvasWidth + CANVAS_X_PADDING
-
-  // Separate span relationships (no event_id) from event-scoped relationships
   const { eventRels, spanRels } = useMemo(() => {
     const ev = []
     const sp = []
@@ -158,178 +133,146 @@ export function TimelineCanvas({
     return { eventRels: ev, spanRels: sp }
   }, [relationships])
 
+  // Participants in the focused event (for focus mode dimming)
+  const focusedParticipants = useMemo(() => {
+    if (!focusMode || !focusedEventId) return null
+    return eventParticipants.get(focusedEventId) ?? new Set()
+  }, [focusMode, focusedEventId, eventParticipants])
+
+  // Determine opacity for a given eventId
+  const eventOpacity = (eventId) => {
+    if (focusMode && focusedEventId) {
+      return eventId === focusedEventId ? 1 : OPACITY_DIMMED
+    }
+    if (!focusMode && selectedEventId) {
+      return eventId === selectedEventId ? 1 : OPACITY_DIMMED
+    }
+    return 1
+  }
+
+  const svgWidth = canvasWidth + CANVAS_X_PADDING
+
   return (
     <svg
-      width={svgWidth}
-      height={canvasHeight}
-      style={{ display: 'block', cursor: 'default', userSelect: 'none' }}
+      width={svgWidth * zoom}
+      height={canvasHeight * zoom}
+      style={{ display: 'block' }}
     >
       <ArrowMarkers />
 
-      {/* ── All positioned content offset by CANVAS_X_PADDING ── */}
-      <g transform={`translate(${CANVAS_X_PADDING}, 0)`}>
+      {/* Scale all content by zoom */}
+      <g transform={`scale(${zoom})`}>
 
-        {/* 1. Swimlane background bands */}
-        <g style={{ zIndex: Z_SWIMLANE_BG }}>
-          {[...groupBands.values()].map(band => (
-            <rect
-              key={band.affiliationId}
-              x={0}
-              y={band.yStart}
-              width={canvasWidth}
-              height={band.yEnd - band.yStart}
-              fill={`${band.color}12`}
-            />
-          ))}
-          {/* Subtle horizontal separator between affiliation groups */}
-          {[...groupBands.values()].map(band => (
-            <line
-              key={`sep-${band.affiliationId}`}
-              x1={0}
-              y1={band.yStart}
-              x2={canvasWidth}
-              y2={band.yStart}
-              stroke={`${band.color}28`}
-              strokeWidth={1}
-            />
-          ))}
-        </g>
+        {/* Offset all positioned content by CANVAS_X_PADDING */}
+        <g transform={`translate(${CANVAS_X_PADDING}, 0)`}>
 
-        {/* 2. Chapter header bars */}
-        <g style={{ zIndex: Z_CHAPTER_BAR }}>
+          {/* 1. Swimlane background bands */}
+          {[...groupBands.values()].map(band => (
+            <g key={band.affiliationId}>
+              <rect
+                x={0}
+                y={band.yStart}
+                width={canvasWidth}
+                height={band.yEnd - band.yStart}
+                fill={`${band.color}12`}
+              />
+              <line
+                x1={0} y1={band.yStart}
+                x2={canvasWidth} y2={band.yStart}
+                stroke={`${band.color}28`}
+                strokeWidth={1}
+              />
+            </g>
+          ))}
+
+          {/* 2. Chapter header bars */}
           {[...chapterBounds.values()].map(ch => (
             <g key={ch.chapterId}>
               <rect
-                x={ch.x}
-                y={0}
-                width={ch.width}
-                height={CHAPTER_HEADER_HEIGHT}
+                x={ch.x} y={0}
+                width={ch.width} height={CHAPTER_HEADER_HEIGHT}
                 fill={`${ch.color}28`}
               />
-              {/* Left accent border */}
-              <rect
-                x={ch.x}
-                y={0}
-                width={3}
-                height={CHAPTER_HEADER_HEIGHT}
-                fill={ch.color}
-              />
-              {/* Chapter label */}
+              <rect x={ch.x} y={0} width={3} height={CHAPTER_HEADER_HEIGHT} fill={ch.color} />
               <text
-                x={ch.x + 10}
-                y={CHAPTER_HEADER_HEIGHT - 10}
-                fill={ch.color}
-                fontSize={10}
-                fontFamily="monospace"
-                fontWeight="bold"
-                letterSpacing="0.06em"
-                opacity={0.85}
+                x={ch.x + 10} y={CHAPTER_HEADER_HEIGHT - 10}
+                fill={ch.color} fontSize={10} fontFamily="monospace"
+                fontWeight="bold" letterSpacing="0.06em" opacity={0.85}
               >
                 {ch.label.toUpperCase()}
               </text>
             </g>
           ))}
-        </g>
 
-        {/* 3. Axis ticks (faint vertical guides) */}
-        <g style={{ zIndex: Z_AXIS_TICK }}>
+          {/* 3. Axis ticks */}
           {axisTicks.map(tick => (
             <g key={tick.label}>
               <line
-                x1={tick.x}
-                y1={CHAPTER_HEADER_HEIGHT}
-                x2={tick.x}
-                y2={canvasHeight}
-                stroke="#ffffff"
-                strokeWidth={1}
-                opacity={0.04}
+                x1={tick.x} y1={CHAPTER_HEADER_HEIGHT}
+                x2={tick.x} y2={canvasHeight}
+                stroke="#ffffff" strokeWidth={1} opacity={0.04}
               />
               <text
-                x={tick.x}
-                y={canvasHeight - 6}
-                fill="#2e2e2e"
-                fontSize={8.5}
-                fontFamily="monospace"
-                textAnchor="middle"
-                letterSpacing="0.06em"
+                x={tick.x} y={canvasHeight - 6}
+                fill="#2e2e2e" fontSize={8.5} fontFamily="monospace"
+                textAnchor="middle" letterSpacing="0.06em"
               >
                 {tick.label}
               </text>
             </g>
           ))}
-        </g>
 
-        {/* 4. Event markers */}
-        <g style={{ zIndex: Z_EVENT_MARKER }}>
+          {/* 4. Event markers */}
           {events.map(event => {
             const zone = eventZones.get(event.id)
             if (!zone) return null
-            const isSelected = event.id === selectedEventId
-            const markerColor = isSelected ? '#fff' : '#555'
-            const labelColor = isSelected ? '#ccc' : '#3a3a3a'
+
+            const isFocused = focusMode && event.id === focusedEventId
+            const isSelected = !focusMode && event.id === selectedEventId
+            const highlight = isFocused || isSelected
+            const markerColor = highlight ? '#fff' : '#555'
+            const labelColor = highlight ? '#ccc' : '#3a3a3a'
 
             return (
               <g
                 key={`marker-${event.id}`}
-                onClick={() => onSelectEvent(isSelected ? null : event.id)}
+                onClick={() => onSelectEvent(highlight ? null : event.id)}
                 style={{ cursor: 'pointer' }}
               >
-                {/* Highlight background for selected event */}
-                {isSelected && (
+                {highlight && (
                   <rect
-                    x={zone.x - 4}
-                    y={0}
-                    width={zone.width + 8}
-                    height={HEADER_HEIGHT}
-                    fill="#ffffff08"
-                    rx={2}
+                    x={zone.x - 4} y={0}
+                    width={zone.width + 8} height={HEADER_HEIGHT}
+                    fill="#ffffff08" rx={2}
                   />
                 )}
-                {/* Date label */}
                 <text
-                  x={zone.centerX}
-                  y={CHAPTER_HEADER_HEIGHT + 13}
-                  fill={markerColor}
-                  fontSize={8}
-                  fontFamily="monospace"
-                  textAnchor="middle"
-                  letterSpacing="0.06em"
-                  opacity={0.7}
+                  x={zone.centerX} y={CHAPTER_HEADER_HEIGHT + 13}
+                  fill={markerColor} fontSize={8} fontFamily="monospace"
+                  textAnchor="middle" letterSpacing="0.06em" opacity={0.7}
                 >
                   {formatDateLabel(event.date)}
                 </text>
-                {/* Event name */}
                 <text
-                  x={zone.centerX}
-                  y={CHAPTER_HEADER_HEIGHT + 25}
-                  fill={labelColor}
-                  fontSize={7.5}
-                  fontFamily="monospace"
-                  textAnchor="middle"
-                  letterSpacing="0.03em"
+                  x={zone.centerX} y={CHAPTER_HEADER_HEIGHT + 25}
+                  fill={labelColor} fontSize={7.5} fontFamily="monospace"
+                  textAnchor="middle" letterSpacing="0.03em"
                 >
                   {truncate(event.label, 22)}
                 </text>
-                {/* Tick mark dropping to row area */}
                 <line
-                  x1={zone.centerX}
-                  y1={CHAPTER_HEADER_HEIGHT + 30}
-                  x2={zone.centerX}
-                  y2={HEADER_HEIGHT - 2}
-                  stroke={markerColor}
-                  strokeWidth={1}
-                  opacity={0.3}
+                  x1={zone.centerX} y1={CHAPTER_HEADER_HEIGHT + 30}
+                  x2={zone.centerX} y2={HEADER_HEIGHT - 2}
+                  stroke={markerColor} strokeWidth={1} opacity={0.3}
                 />
               </g>
             )
           })}
-        </g>
 
-        {/* 5. Span relationships — implemented in Task #4 */}
-        {spanRels.length > 0 && null}
+          {/* 5. Span relationships — implemented in Task #5+ */}
+          {spanRels.length > 0 && null}
 
-        {/* 6. Relationship arcs */}
-        <g style={{ zIndex: Z_ARC_EDGE }}>
+          {/* 6. Relationship arcs */}
           {eventRels.map(rel => {
             const zone = eventZones.get(rel.event_id)
             if (!zone) return null
@@ -350,14 +293,9 @@ export function TimelineCanvas({
             const color = RELATIONSHIP_COLORS[rel.type] ?? '#888'
             const dashArray = CONFIDENCE_DASH[rel.confidence] ?? null
             const isDirected = rel.direction === 'directed'
-
             const d = arcPath(x1, y1, x2, y2, isDirected)
-            const markerId = RELATIONSHIP_COLORS[rel.type]
-              ? `arrow-${rel.type}`
-              : 'arrow-default'
-
-            // Dim arcs not in the selected event (when an event is selected)
-            const dimmed = selectedEventId && rel.event_id !== selectedEventId
+            const markerId = RELATIONSHIP_COLORS[rel.type] ? `arrow-${rel.type}` : 'arrow-default'
+            const opacity = eventOpacity(rel.event_id) * 0.75
 
             return (
               <path
@@ -367,23 +305,19 @@ export function TimelineCanvas({
                 stroke={color}
                 strokeWidth={ARC_STROKE_WIDTH}
                 strokeDasharray={dashArray}
-                opacity={dimmed ? 0.12 : 0.75}
+                opacity={opacity}
                 markerEnd={isDirected ? `url(#${markerId})` : undefined}
               />
             )
           })}
-        </g>
 
-        {/* 7. Entity icons */}
-        <g style={{ zIndex: Z_ENTITY_ICON }}>
+          {/* 7. Entity icons */}
           {events.map(event => {
             const zone = eventZones.get(event.id)
             if (!zone) return null
             const slots = entitySlots.get(event.id)
             const participants = eventParticipants.get(event.id) ?? new Set()
-
-            // Dim icons not in the selected event
-            const dimmed = selectedEventId && event.id !== selectedEventId
+            const evOpacity = eventOpacity(event.id)
 
             return [...participants].map(entityId => {
               const row = rowByEntityId.get(entityId)
@@ -396,24 +330,33 @@ export function TimelineCanvas({
               const color = row.affiliation.color
               const label = initials(row.entity.label)
 
+              // Extra dim for non-participants in focus mode
+              let iconOpacity = evOpacity
+              if (focusMode && focusedParticipants && !focusedParticipants.has(entityId)) {
+                iconOpacity = Math.min(iconOpacity, 0.10)
+              }
+              // Dim entity if a different entity is selected
+              if (!focusMode && selectedEntityId && entityId !== selectedEntityId) {
+                iconOpacity = Math.min(iconOpacity, 0.35)
+              }
+
+              const isSelected = !focusMode && entityId === selectedEntityId
+
               return (
                 <g
                   key={`icon-${event.id}-${entityId}`}
-                  opacity={dimmed ? 0.15 : 1}
+                  opacity={iconOpacity}
+                  onClick={() => onSelectEntity?.(entityId)}
+                  style={{ cursor: onSelectEntity ? 'pointer' : 'default' }}
                 >
-                  {/* Icon background */}
                   <circle
-                    cx={cx}
-                    cy={cy}
-                    r={r}
+                    cx={cx} cy={cy} r={r}
                     fill="#0d0d0d"
                     stroke={color}
-                    strokeWidth={ENTITY_ICON_RING}
+                    strokeWidth={isSelected ? ENTITY_ICON_RING * 2 : ENTITY_ICON_RING}
                   />
-                  {/* Initials */}
                   <text
-                    x={cx}
-                    y={cy + 3.5}
+                    x={cx} y={cy + 3.5}
                     textAnchor="middle"
                     fill={color}
                     fontSize={8}
@@ -427,8 +370,8 @@ export function TimelineCanvas({
               )
             })
           })}
-        </g>
 
+        </g>
       </g>
     </svg>
   )
