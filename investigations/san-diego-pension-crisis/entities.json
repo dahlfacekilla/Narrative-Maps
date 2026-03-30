@@ -1,0 +1,806 @@
+[
+  {
+    "id": "diann-shipione",
+    "label": "Diann Shipione",
+    "type": "person",
+    "affiliation": "whistleblower",
+    "description": "Pension Board Trustee and VP at UBS Financial Services. Primary whistleblower; raised concerns about MP-2 underfunding in 2002 and bond disclosure omissions in 2003. Faced retaliation from the board including ethics charges and attempted removal.",
+    "role": "Whistleblower / Pension Board Trustee",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Diann_Shipione",
+      "https://www.spokesman.com/stories/2004/sep/25/ignoring-whistleblower-may-cost-city-dearly/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2005",
+    "tags": [
+      "whistleblower",
+      "pension-board",
+      "key-actor"
+    ],
+    "notes": "",
+    "timeline_x": 2002,
+    "timeline_y": 10.0
+  },
+  {
+    "id": "dick-murphy",
+    "label": "Dick Murphy",
+    "type": "person",
+    "affiliation": "city-administration",
+    "description": "Mayor of San Diego 2000-2005. Presided over both the MP-1 legacy and the MP-2 approval. Re-elected in contentious 2004 race. Named one of three worst big-city mayors by Time magazine. Resigned April 25, 2005, effective July 15, 2005.",
+    "role": "Mayor of San Diego",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Dick_Murphy",
+      "https://www.npr.org/2005/05/02/4627309/san-diego-mayor-resigns-amid-finance-scandal"
+    ],
+    "confidence": "verified",
+    "first_seen": "2000",
+    "last_seen": "2005",
+    "tags": [
+      "mayor",
+      "key-actor",
+      "elected-official"
+    ],
+    "notes": "",
+    "timeline_x": 2000,
+    "timeline_y": 1.0
+  },
+  {
+    "id": "michael-uberuaga",
+    "label": "Michael Uberuaga",
+    "type": "person",
+    "affiliation": "city-administration",
+    "description": "City Manager November 1997 - April 2004. Designed and implemented both underfunding agreements. Charged by SEC for securities fraud in 2008. Settled in 2010 with $25,000 penalty without admitting wrongdoing.",
+    "role": "City Manager",
+    "sources": [
+      "https://www.sec.gov/litigation/litreleases/2008/lr20522.htm",
+      "https://www.sec.gov/news/press/2008/2008-57.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "1997",
+    "last_seen": "2010",
+    "tags": [
+      "city-management",
+      "sec-defendant",
+      "key-actor"
+    ],
+    "notes": "Settled SEC charges October 2010 without admitting or denying wrongdoing. $25,000 penalty.",
+    "timeline_x": 2002,
+    "timeline_y": 2.0
+  },
+  {
+    "id": "edward-ryan",
+    "label": "Edward Ryan",
+    "type": "person",
+    "affiliation": "city-administration",
+    "description": "City Auditor and Comptroller 1982 - February 2004. Signed letters falsely representing city's audited financials as accurate. Resigned February 2004. Charged by SEC in 2008; settled 2010 with $25,000 penalty.",
+    "role": "City Auditor and Comptroller",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "1982",
+    "last_seen": "2010",
+    "tags": [
+      "city-management",
+      "sec-defendant"
+    ],
+    "notes": "Resigned February 2004. Settled SEC charges October 2010 with $25,000 penalty.",
+    "timeline_x": 2002,
+    "timeline_y": 3.0
+  },
+  {
+    "id": "mary-vattimo",
+    "label": "Mary Vattimo",
+    "type": "person",
+    "affiliation": "city-administration",
+    "description": "City Treasurer. Participated in drafting false bond disclosure documents. Resigned May 2005. Settled SEC charges 2010 with $5,000 penalty.",
+    "role": "City Treasurer",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm",
+      "https://www.sec.gov/news/press/2010/2010-204.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2010",
+    "tags": [
+      "city-management",
+      "sec-defendant"
+    ],
+    "notes": "Lowest penalty of the four settling officials \u2014 $5,000.",
+    "timeline_x": 2002,
+    "timeline_y": 1.8
+  },
+  {
+    "id": "patricia-frazier",
+    "label": "Patricia Frazier",
+    "type": "person",
+    "affiliation": "city-administration",
+    "description": "Deputy City Manager of Finance. Revised false disclosure documents and signed closing letters for two bond offerings. Settled SEC charges 2010 with $25,000 penalty.",
+    "role": "Deputy City Manager of Finance",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm",
+      "https://www.sec.gov/news/press/2010/2010-204.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2010",
+    "tags": [
+      "city-management",
+      "sec-defendant"
+    ],
+    "notes": "",
+    "timeline_x": 2002,
+    "timeline_y": 2.5
+  },
+  {
+    "id": "teresa-webster",
+    "label": "Teresa Webster",
+    "type": "person",
+    "affiliation": "pension-board",
+    "description": "Former Assistant Auditor and Pension Board Member. Reviewed financials with false disclosures. Charged federally in 2006 (all charges dismissed April 2010). SEC case also dismissed August 2011.",
+    "role": "Assistant Auditor / Pension Board Member",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/",
+      "https://www.sandiegouniontribune.com/sdut-sec-case-dismissed-against-ex-san-diego-official-c-2011sep03-story.html"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2011",
+    "tags": [
+      "pension-board",
+      "federal-defendant",
+      "sec-defendant"
+    ],
+    "notes": "Only official to have state, federal, and SEC charges all ultimately dismissed.",
+    "timeline_x": 2002,
+    "timeline_y": 4.2
+  },
+  {
+    "id": "ron-saathoff",
+    "label": "Ron Saathoff",
+    "type": "person",
+    "affiliation": "pension-board",
+    "description": "Firefighters Union Local 145 president and SDCERS Pension Board Member. Received a special pension benefit allowing combined salary calculation, adding ~$25,000/year to his pension. Charged with 20 counts of fraud and conspiracy in 2006. All charges dismissed April 2010.",
+    "role": "Firefighter Union President / Pension Board Member",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2010",
+    "tags": [
+      "pension-board",
+      "labor-union",
+      "federal-defendant",
+      "key-actor"
+    ],
+    "notes": "The special benefit designed for Saathoff was the core of the federal quid pro quo theory. Charged with 20 counts \u2014 the highest of any defendant.",
+    "timeline_x": 2002,
+    "timeline_y": 5.0
+  },
+  {
+    "id": "cathy-lexin",
+    "label": "Cathy Lexin",
+    "type": "person",
+    "affiliation": "pension-board",
+    "description": "Director of Human Resources and Pension Board Member. Accused of designing the special pension benefit for Saathoff. Charged in 2006 with 16 counts of fraud and conspiracy. All charges dismissed April 2010.",
+    "role": "Director of Human Resources / Pension Board Member",
+    "sources": [
+      "https://voiceofsandiego.org/2005/05/17/six-sd-officials-charged-in-pension-scandal/",
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2010",
+    "tags": [
+      "pension-board",
+      "federal-defendant",
+      "da-defendant"
+    ],
+    "notes": "",
+    "timeline_x": 2002,
+    "timeline_y": 5.5
+  },
+  {
+    "id": "larry-grissom",
+    "label": "Larry Grissom",
+    "type": "person",
+    "affiliation": "pension-board",
+    "description": "SDCERS Pension Fund Administrator. Accused of devising special benefit for Saathoff. Charged in 2006 with 16 counts of fraud and conspiracy. Cleared April 2010.",
+    "role": "SDCERS Administrator",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2010",
+    "tags": [
+      "pension-board",
+      "federal-defendant",
+      "sdcers"
+    ],
+    "notes": "",
+    "timeline_x": 2002,
+    "timeline_y": 6.0
+  },
+  {
+    "id": "lori-chapin",
+    "label": "Lori Chapin",
+    "type": "person",
+    "affiliation": "pension-board",
+    "description": "Chief Pension Attorney for SDCERS. Accused of designing and concealing the special benefit for Saathoff. Charged in 2006 with 16 counts of fraud and conspiracy. Cleared April 2010 when honest services fraud statute was found unconstitutionally vague.",
+    "role": "Chief Pension Attorney, SDCERS",
+    "sources": [
+      "https://voiceofsandiego.org/topics/government/feds-indict-five-in-sd-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2010",
+    "tags": [
+      "sdcers",
+      "federal-defendant"
+    ],
+    "notes": "",
+    "timeline_x": 2002,
+    "timeline_y": 6.5
+  },
+  {
+    "id": "jerry-sanders",
+    "label": "Jerry Sanders",
+    "type": "person",
+    "affiliation": "political",
+    "description": "Former San Diego Police Chief. Elected Mayor in November 2005 special election with 54% of the vote after Dick Murphy's resignation. Inherited the pension crisis and worked to address it.",
+    "role": "Mayor of San Diego (successor)",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Jerry_Sanders_(politician)"
+    ],
+    "confidence": "verified",
+    "first_seen": "2005",
+    "last_seen": "2016",
+    "tags": [
+      "mayor",
+      "elected-official"
+    ],
+    "notes": "",
+    "timeline_x": 2005,
+    "timeline_y": 7.5
+  },
+  {
+    "id": "michael-aguirre",
+    "label": "Michael Aguirre",
+    "type": "person",
+    "affiliation": "enforcement",
+    "description": "City Attorney elected in 2005. Took aggressive approach to pension crisis; attempted to overturn $900M in pension benefit increases. Seized SDCERS documents and took control of pension system's legal affairs in December 2005.",
+    "role": "City Attorney",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mike_Aguirre",
+      "https://voiceofsandiego.org/2005/08/17/aguirre-wants-city-to-admit-errors-settle-with-sec/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2005",
+    "last_seen": "2010",
+    "tags": [
+      "elected-official",
+      "city-attorney"
+    ],
+    "notes": "His efforts to overturn benefit increases were ultimately unsuccessful in court.",
+    "timeline_x": 2005,
+    "timeline_y": 12.5
+  },
+  {
+    "id": "thomas-saiz",
+    "label": "Thomas J. Saiz",
+    "type": "person",
+    "affiliation": "external",
+    "description": "CPA and principal of Calderon, Jaham & Osborn (CJO). Issued unqualified audit reports on bond offerings despite material omissions about pension obligations. Charged by SEC December 2007. Settled with $15,000 penalty.",
+    "role": "Independent Auditor (CPA)",
+    "sources": [
+      "https://www.sec.gov/news/press/2007/2007-257.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "2001",
+    "last_seen": "2008",
+    "tags": [
+      "auditor",
+      "sec-defendant"
+    ],
+    "notes": "Settled SEC charges without admitting or denying. $15,000 penalty.",
+    "timeline_x": 2002,
+    "timeline_y": 14.5
+  },
+  {
+    "id": "bonnie-dumanis",
+    "label": "Bonnie Dumanis",
+    "type": "person",
+    "affiliation": "enforcement",
+    "description": "San Diego County District Attorney. Filed felony charges against six former and current city officials on May 17, 2005 under California Government Code 1090 (conflict-of-interest). Charges dismissed May 2010 after CA Supreme Court rejected the legal theory.",
+    "role": "San Diego County District Attorney",
+    "sources": [
+      "https://voiceofsandiego.org/2005/05/17/six-sd-officials-charged-in-pension-scandal/",
+      "https://en.wikipedia.org/wiki/Bonnie_Dumanis"
+    ],
+    "confidence": "verified",
+    "first_seen": "2005",
+    "last_seen": "2010",
+    "tags": [
+      "elected-official",
+      "prosecutor"
+    ],
+    "notes": "",
+    "timeline_x": 2005,
+    "timeline_y": 12.0
+  },
+  {
+    "id": "donna-frye",
+    "label": "Donna Frye",
+    "type": "person",
+    "affiliation": "political",
+    "description": "San Diego City Council Member 2000-2010. Only council member to vote NO on the November 18, 2002 pension benefits vote after being warned by Diann Shipione. Later made a write-in bid for mayor in 2004.",
+    "role": "San Diego City Council Member",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Donna_Frye"
+    ],
+    "confidence": "verified",
+    "first_seen": "2000",
+    "last_seen": "2010",
+    "tags": [
+      "elected-official",
+      "city-council"
+    ],
+    "notes": "Only council member to oppose MP-2 benefits vote.",
+    "timeline_x": 2002,
+    "timeline_y": 8.0
+  },
+  {
+    "id": "scott-peters",
+    "label": "Scott Peters",
+    "type": "person",
+    "affiliation": "political",
+    "description": "San Diego City Council President 2000-2008. Approved the 2002 pension pact as council president; voted for benefit increases under MP-2. Later defended himself as not originating the plan. Investigated findings labeled his role 'negligent' rather than criminally culpable.",
+    "role": "City Council President",
+    "sources": [
+      "https://voiceofsandiego.org/2014/08/14/fact-check-the-absurd-claims-that-scott-peters-created-and-solved-the-pension-crisis/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2000",
+    "last_seen": "2008",
+    "tags": [
+      "elected-official",
+      "city-council"
+    ],
+    "notes": "",
+    "timeline_x": 2002,
+    "timeline_y": 7.0
+  },
+  {
+    "id": "sdcers",
+    "label": "SDCERS",
+    "type": "organization",
+    "affiliation": "pension-board",
+    "description": "San Diego City Employees' Retirement System. Established 1927. 13-member Board of Administration serves 20,000+ active and retired members. Site of the pension underfunding decisions and the quid pro quo benefit scheme.",
+    "role": "Municipal pension fund",
+    "sources": [
+      "https://www.sdcers.org/"
+    ],
+    "confidence": "verified",
+    "first_seen": "1927",
+    "last_seen": null,
+    "tags": [
+      "pension",
+      "key-institution"
+    ],
+    "notes": "Pension deficit grew to an estimated $2.5+ billion by end of scandal period.",
+    "timeline_x": 2001,
+    "timeline_y": 4.0
+  },
+  {
+    "id": "sec",
+    "label": "SEC",
+    "type": "organization",
+    "affiliation": "enforcement",
+    "description": "U.S. Securities and Exchange Commission. Investigated San Diego municipal bond disclosures 2004-2010. Sanctioned the City of San Diego (November 2006), charged independent auditor Saiz (December 2007), and charged five city officials (April 2008). First agency to secure financial penalties against city officials in a muni bond fraud case.",
+    "role": "Federal securities regulator / enforcement agency",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm",
+      "https://www.sec.gov/news/press/2010/2010-204.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "2004",
+    "last_seen": "2011",
+    "tags": [
+      "regulator",
+      "enforcement"
+    ],
+    "notes": "SEC case against Webster dismissed August 2011 \u2014 last action in the scandal.",
+    "timeline_x": 2004,
+    "timeline_y": 11.0
+  },
+  {
+    "id": "us-attorneys-office",
+    "label": "U.S. Attorney's Office (San Diego)",
+    "type": "organization",
+    "affiliation": "enforcement",
+    "description": "Federal prosecution arm. Filed federal indictment January 2006 against five pension officials on fraud and conspiracy charges. Ultimately all charges dismissed April 2010 when honest services fraud statute was struck down as unconstitutionally vague.",
+    "role": "Federal prosecutor",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2004",
+    "last_seen": "2010",
+    "tags": [
+      "enforcement",
+      "federal"
+    ],
+    "notes": "",
+    "timeline_x": 2005,
+    "timeline_y": 11.5
+  },
+  {
+    "id": "san-diego-city-council",
+    "label": "San Diego City Council",
+    "type": "organization",
+    "affiliation": "political",
+    "description": "San Diego's legislative body. Voted to approve Manager's Proposal 1 (1996) and Manager's Proposal 2 benefit increases (November 18, 2002). Only Donna Frye voted against MP-2. Collectively authorized the underfunding while increasing retirement benefits.",
+    "role": "Municipal legislative body",
+    "sources": [
+      "https://www.sandiego.gov"
+    ],
+    "confidence": "verified",
+    "first_seen": "1996",
+    "last_seen": null,
+    "tags": [
+      "elected-official",
+      "key-institution"
+    ],
+    "notes": "",
+    "timeline_x": 2002,
+    "timeline_y": 7.5
+  },
+  {
+    "id": "cjo",
+    "label": "Calderon, Jaham & Osborn (CJO)",
+    "type": "organization",
+    "affiliation": "external",
+    "description": "Independent accounting firm retained to audit San Diego's bond offerings. Issued unqualified audit reports on five bond offerings containing materially false information about pension obligations. Settled SEC charges.",
+    "role": "Independent auditor for city bond offerings",
+    "sources": [
+      "https://www.sec.gov/news/press/2007/2007-257.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "2001",
+    "last_seen": "2008",
+    "tags": [
+      "auditor",
+      "sec-defendant"
+    ],
+    "notes": "",
+    "timeline_x": 2002,
+    "timeline_y": 14.0
+  },
+  {
+    "id": "firefighters-union-local-145",
+    "label": "Firefighters Union Local 145",
+    "type": "organization",
+    "affiliation": "external",
+    "description": "San Diego firefighters union. President Ron Saathoff sat on the SDCERS pension board and received a special tailored pension benefit as part of the MP-2 quid pro quo. His union support was critical to the pension board's approval of MP-2.",
+    "role": "Municipal labor union",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2006",
+    "tags": [
+      "labor-union"
+    ],
+    "notes": "",
+    "timeline_x": 2002,
+    "timeline_y": 5.8
+  },
+  {
+    "id": "mp1",
+    "label": "Manager's Proposal 1 (1996)",
+    "type": "event",
+    "affiliation": "city-administration",
+    "description": "First pension underfunding agreement. Approved 1996 when SDCERS was 92.3% funded. Increased pension multiplier from 1.45% to 2%, created service credit purchase system, and established DROP (Deferred Retirement Option Plan). Set the structural precedent for underfunding.",
+    "role": "Policy / Legislation",
+    "sources": [
+      "https://docs.sandiego.gov/legalopinions/LO-2007-2.pdf"
+    ],
+    "confidence": "verified",
+    "first_seen": "1996",
+    "last_seen": "1996",
+    "tags": [
+      "underfunding",
+      "legislation",
+      "key-event"
+    ],
+    "notes": "System was 92.3% funded at time of approval \u2014 the last point of relative health before the crisis.",
+    "timeline_x": 1996,
+    "timeline_y": 1.5
+  },
+  {
+    "id": "mp2-board-vote",
+    "label": "MP-2 Pension Board Vote (July 2002)",
+    "type": "event",
+    "affiliation": "pension-board",
+    "description": "SDCERS pension board voted July 11, 2002 to approve the city's Manager's Proposal 2. Shipione raised concerns about the 'snake in the garden' accounting trick during the meeting. Ron Saathoff's vote was secured through the special benefit quid pro quo, per federal prosecutors.",
+    "role": "Key vote",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/",
+      "https://en.wikipedia.org/wiki/San_Diego_pension_scandal"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002-07-11",
+    "last_seen": "2002-07-11",
+    "tags": [
+      "key-event",
+      "vote",
+      "pension-board"
+    ],
+    "notes": "Shipione's 'snake in the garden' phrase described a mechanism to reduce city contributions while increasing benefits.",
+    "timeline_x": 2002,
+    "timeline_y": 4.5
+  },
+  {
+    "id": "mp2-council-vote",
+    "label": "City Council MP-2 Vote (Nov 2002)",
+    "type": "event",
+    "affiliation": "political",
+    "description": "San Diego City Council voted November 18, 2002 to approve the benefit increases under Manager's Proposal 2. Donna Frye cast the only dissenting vote after being warned by Diann Shipione. The vote locked in increased benefits while authorizing continued pension underfunding.",
+    "role": "Key vote",
+    "sources": [
+      "https://en.wikipedia.org/wiki/San_Diego_pension_scandal"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002-11-18",
+    "last_seen": "2002-11-18",
+    "tags": [
+      "key-event",
+      "vote",
+      "city-council"
+    ],
+    "notes": "Only Donna Frye voted no.",
+    "timeline_x": 2002,
+    "timeline_y": 8.5
+  },
+  {
+    "id": "public-disclosure-2004",
+    "label": "Public Pension Disclosure (Jan 2004)",
+    "type": "event",
+    "affiliation": "city-administration",
+    "description": "On January 27, 2004, the City of San Diego publicly admitted errors and omissions in financial statements used in bond offerings. This disclosure triggered SEC and FBI/U.S. Attorney investigations.",
+    "role": "Crisis disclosure",
+    "sources": [
+      "https://en.wikipedia.org/wiki/San_Diego_pension_scandal"
+    ],
+    "confidence": "verified",
+    "first_seen": "2004-01-27",
+    "last_seen": "2004-01-27",
+    "tags": [
+      "key-event",
+      "disclosure"
+    ],
+    "notes": "The triggering event for all subsequent enforcement actions.",
+    "timeline_x": 2004,
+    "timeline_y": 1.5
+  },
+  {
+    "id": "sp-rating-withdrawal",
+    "label": "S&P Bond Rating Withdrawal (Sept 2004)",
+    "type": "event",
+    "affiliation": "external",
+    "description": "Standard & Poor's withdrew San Diego's AA-minus bond rating in September 2004 after the pension liability revelation. The city was effectively locked out of the municipal bond market for four years, unable to borrow for infrastructure.",
+    "role": "Financial consequence",
+    "sources": [
+      "https://www.pionline.com/article/20080516/ONLINE/939035460/s-p-reinstates-san-diego-city-bond-ratings"
+    ],
+    "confidence": "verified",
+    "first_seen": "2004-09",
+    "last_seen": "2008",
+    "tags": [
+      "consequence",
+      "financial"
+    ],
+    "notes": "The city earned the nickname 'Enron by the Sea' around this period.",
+    "timeline_x": 2004,
+    "timeline_y": 14.0
+  },
+  {
+    "id": "da-charges-2005",
+    "label": "DA Files Felony Charges (May 2005)",
+    "type": "event",
+    "affiliation": "enforcement",
+    "description": "DA Bonnie Dumanis filed felony charges against six former and current city officials on May 17, 2005 under California Government Code 1090 (conflict-of-interest). All charges ultimately dismissed May 2010 after CA Supreme Court rejected the legal theory.",
+    "role": "Criminal prosecution",
+    "sources": [
+      "https://voiceofsandiego.org/2005/05/17/six-sd-officials-charged-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2005-05-17",
+    "last_seen": "2010-05",
+    "tags": [
+      "key-event",
+      "prosecution"
+    ],
+    "notes": "",
+    "timeline_x": 2005,
+    "timeline_y": 11.2
+  },
+  {
+    "id": "murphy-resignation",
+    "label": "Mayor Murphy Resignation (Apr 2005)",
+    "type": "event",
+    "affiliation": "city-administration",
+    "description": "Mayor Dick Murphy announced his resignation April 25, 2005, effective July 15, 2005, amid pension scandal and federal investigations. Time magazine had named him one of the nation's three worst big-city mayors.",
+    "role": "Political consequence",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Dick_Murphy",
+      "https://www.npr.org/2005/05/02/4627309/san-diego-mayor-resigns-amid-finance-scandal"
+    ],
+    "confidence": "verified",
+    "first_seen": "2005-04-25",
+    "last_seen": "2005-07-15",
+    "tags": [
+      "key-event",
+      "consequence"
+    ],
+    "notes": "",
+    "timeline_x": 2005,
+    "timeline_y": 2.0
+  },
+  {
+    "id": "federal-indictment-2006",
+    "label": "Federal Indictment (Jan 2006)",
+    "type": "event",
+    "affiliation": "enforcement",
+    "description": "Federal grand jury returned indictments against five pension officials in January 2006: Saathoff (20 counts), Lexin, Webster, Grissom, and Chapin (16 counts each) on fraud and conspiracy charges related to the Saathoff special benefit quid pro quo.",
+    "role": "Criminal prosecution",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "first_seen": "2006-01",
+    "last_seen": "2010-04",
+    "tags": [
+      "key-event",
+      "prosecution",
+      "federal"
+    ],
+    "notes": "",
+    "timeline_x": 2006,
+    "timeline_y": 11.5
+  },
+  {
+    "id": "sec-order-city-2006",
+    "label": "SEC Order Sanctions City (Nov 2006)",
+    "type": "event",
+    "affiliation": "enforcement",
+    "description": "SEC entered an order in November 2006 finding that the City of San Diego committed securities fraud by failing to disclose pension and retiree health care funding problems in five bond offerings (2002-2003) that raised $260 million.",
+    "role": "Regulatory enforcement",
+    "sources": [
+      "https://www.sec.gov/news/press/2006/2006-170.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "2006-11",
+    "last_seen": "2006-11",
+    "tags": [
+      "key-event",
+      "sec",
+      "enforcement"
+    ],
+    "notes": "",
+    "timeline_x": 2006,
+    "timeline_y": 12.0
+  },
+  {
+    "id": "sec-auditor-charges-2007",
+    "label": "SEC Charges Auditor Saiz (Dec 2007)",
+    "type": "event",
+    "affiliation": "enforcement",
+    "description": "SEC filed civil fraud action against Thomas J. Saiz and firm CJO on December 11, 2007 for issuing unqualified audit reports that failed GAAS standards and omitted material pension information. Settled with $15,000 penalty.",
+    "role": "Regulatory enforcement",
+    "sources": [
+      "https://www.sec.gov/news/press/2007/2007-257.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "2007-12-11",
+    "last_seen": "2008",
+    "tags": [
+      "sec",
+      "enforcement",
+      "auditor"
+    ],
+    "notes": "",
+    "timeline_x": 2007,
+    "timeline_y": 11.0
+  },
+  {
+    "id": "sec-official-charges-2008",
+    "label": "SEC Charges Five Officials (Apr 2008)",
+    "type": "event",
+    "affiliation": "enforcement",
+    "description": "SEC charged five former San Diego city officials with securities fraud on April 7, 2008: Uberuaga, Ryan, Frazier, Vattimo, and Webster for participating in drafting and certifying false and misleading bond disclosure documents.",
+    "role": "Regulatory enforcement",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "2008-04-07",
+    "last_seen": "2011",
+    "tags": [
+      "key-event",
+      "sec",
+      "enforcement"
+    ],
+    "notes": "First time SEC charged individual city officials in a muni bond fraud case.",
+    "timeline_x": 2008,
+    "timeline_y": 11.5
+  },
+  {
+    "id": "sec-settlement-2010",
+    "label": "SEC Settlement with Four Officials (Oct 2010)",
+    "type": "event",
+    "affiliation": "enforcement",
+    "description": "Four officials (Uberuaga, Ryan, Frazier, Vattimo) settled SEC securities fraud charges on October 27, 2010 without admitting or denying wrongdoing, paying a combined $80,000 in penalties. Historic first: financial penalties against city officials in municipal bond fraud.",
+    "role": "Regulatory settlement",
+    "sources": [
+      "https://www.sec.gov/news/press/2010/2010-204.htm"
+    ],
+    "confidence": "verified",
+    "first_seen": "2010-10-27",
+    "last_seen": "2010-10-27",
+    "tags": [
+      "key-event",
+      "sec",
+      "settlement"
+    ],
+    "notes": "Combined penalties totaled $80,000 \u2014 widely considered modest given the scale of the fraud.",
+    "timeline_x": 2010,
+    "timeline_y": 12.0
+  },
+  {
+    "id": "federal-charges-dismissed-2010",
+    "label": "Federal Criminal Charges Dismissed (Apr 2010)",
+    "type": "event",
+    "affiliation": "enforcement",
+    "description": "U.S. District Judge Roger Benitez dismissed all federal criminal charges against the five pension officials on April 8, 2010, ruling the honest services fraud statute was unconstitutionally vague and failed to give fair warning that the defendants' conduct could constitute federal fraud.",
+    "role": "Legal outcome",
+    "sources": [
+      "https://www.sandiegouniontribune.com/sdut-five-cleared-in-pension-case-2010apr08-htmlstory.html"
+    ],
+    "confidence": "verified",
+    "first_seen": "2010-04-08",
+    "last_seen": "2010-04-08",
+    "tags": [
+      "key-event",
+      "legal-outcome"
+    ],
+    "notes": "U.S. Supreme Court later affirmed in Skilling v. United States (June 2010) that the honest services statute was too vague.",
+    "timeline_x": 2010,
+    "timeline_y": 11.0
+  },
+  {
+    "id": "sp-reinstatement-2008",
+    "label": "S&P Reinstates Bond Rating (2008)",
+    "type": "event",
+    "affiliation": "external",
+    "description": "Standard & Poor's reinstated San Diego's bond rating in 2008 at A with positive outlook, ending the city's four-year exclusion from the public bond markets.",
+    "role": "Financial recovery",
+    "sources": [
+      "https://www.pionline.com/article/20080516/ONLINE/939035460/s-p-reinstates-san-diego-city-bond-ratings"
+    ],
+    "confidence": "verified",
+    "first_seen": "2008",
+    "last_seen": "2008",
+    "tags": [
+      "consequence",
+      "financial"
+    ],
+    "notes": "Rating reinstated at A, lower than the pre-scandal AA-minus.",
+    "timeline_x": 2008,
+    "timeline_y": 14.5
+  }
+]

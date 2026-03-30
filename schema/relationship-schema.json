@@ -1,0 +1,36 @@
+{
+  "_comment": "Relationship (edge) schema for Narrative Structures investigations. Each relationship connects two entities with a typed, sourced connection.",
+  "_kumu_import_field": "connections",
+  "schema": {
+    "id": "string — unique slug, e.g. 'waid-to-sdcers-employment'",
+    "from": "string — entity id of the source node",
+    "to": "string — entity id of the target node",
+    "type": "enum — financial | employment | political | legal | personal | board | contractual | influence | adversarial",
+    "label": "string — short description shown on edge, e.g. 'appointed by' or 'received funds from'",
+    "description": "string — fuller explanation of the relationship",
+    "direction": "enum — directed | undirected",
+    "sources": "array of URL strings",
+    "confidence": "enum — verified | reported | alleged | inferred",
+    "date_start": "YYYY-MM-DD or YYYY or null",
+    "date_end": "YYYY-MM-DD or YYYY or null — use null if ongoing",
+    "tags": "array of strings",
+    "notes": "string — manual annotations"
+  },
+  "example": {
+    "id": "smith-to-pension-board-vote",
+    "from": "example-person",
+    "to": "sdcers",
+    "type": "political",
+    "label": "voted to increase benefits",
+    "description": "Cast deciding vote on Manager's Proposal 2 in 2002, increasing pension benefits without full actuarial funding.",
+    "direction": "directed",
+    "sources": [
+      "https://example.com/vote-record"
+    ],
+    "confidence": "verified",
+    "date_start": "2002",
+    "date_end": "2002",
+    "tags": ["mp2", "key-vote"],
+    "notes": ""
+  }
+}

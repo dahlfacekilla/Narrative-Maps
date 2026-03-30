@@ -1,0 +1,618 @@
+[
+  {
+    "id": "shipione-warned-council",
+    "from": "diann-shipione",
+    "to": "san-diego-city-council",
+    "type": "political",
+    "label": "warned about MP-2 fraud",
+    "description": "Shipione raised concerns to city council members about the underfunding proposal in 2002, calling it 'possibly corrupt.' Her warning was ignored by all members except Donna Frye.",
+    "direction": "directed",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Diann_Shipione"
+    ],
+    "confidence": "verified",
+    "date_start": "2002",
+    "date_end": "2002",
+    "tags": [
+      "whistleblower",
+      "mp2"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "shipione-warned-murphy",
+    "from": "diann-shipione",
+    "to": "dick-murphy",
+    "type": "political",
+    "label": "alerted mayor to underfunding scheme",
+    "description": "Shipione raised concerns about the pension underfunding proposal to Mayor Murphy's administration. Her warnings were not acted upon.",
+    "direction": "directed",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Diann_Shipione"
+    ],
+    "confidence": "verified",
+    "date_start": "2002",
+    "date_end": "2002",
+    "tags": [
+      "whistleblower"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "frye-dissented-mp2",
+    "from": "donna-frye",
+    "to": "mp2-council-vote",
+    "type": "political",
+    "label": "sole dissenting vote",
+    "description": "Only city council member to vote NO on the November 18, 2002 pension benefit increases after being warned by Diann Shipione.",
+    "direction": "directed",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Donna_Frye"
+    ],
+    "confidence": "verified",
+    "date_start": "2002-11-18",
+    "date_end": "2002-11-18",
+    "tags": [
+      "vote",
+      "mp2"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "peters-approved-mp2",
+    "from": "scott-peters",
+    "to": "mp2-council-vote",
+    "type": "political",
+    "label": "approved as council president",
+    "description": "Peters, as city council president, voted to approve the MP-2 benefit increases. Later argued he did not originate the plan.",
+    "direction": "directed",
+    "sources": [
+      "https://voiceofsandiego.org/2014/08/14/fact-check-the-absurd-claims-that-scott-peters-created-and-solved-the-pension-crisis/"
+    ],
+    "confidence": "verified",
+    "date_start": "2002-11-18",
+    "date_end": "2002-11-18",
+    "tags": [
+      "vote",
+      "mp2"
+    ],
+    "notes": "Investigators later characterized his role as 'negligent' rather than criminally culpable."
+  },
+  {
+    "id": "uberuaga-designed-mp2",
+    "from": "michael-uberuaga",
+    "to": "mp1",
+    "type": "political",
+    "label": "inherited and expanded underfunding structure",
+    "description": "Uberuaga inherited the MP-1 framework and architected the MP-2 underfunding deal, which compounded the existing pension deficit while granting further benefit increases.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/litigation/litreleases/2008/lr20522.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "1997",
+    "date_end": "2004",
+    "tags": [
+      "mp1",
+      "underfunding"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "uberuaga-mp2-architect",
+    "from": "michael-uberuaga",
+    "to": "mp2-board-vote",
+    "type": "political",
+    "label": "designed and proposed MP-2",
+    "description": "Uberuaga as City Manager designed Manager's Proposal 2 and brought it to the pension board and city council for approval.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2002",
+    "date_end": "2002",
+    "tags": [
+      "mp2",
+      "key-actor"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "saathoff-received-benefit",
+    "from": "ron-saathoff",
+    "to": "mp2-board-vote",
+    "type": "financial",
+    "label": "cast decisive vote; received special benefit",
+    "description": "Saathoff voted to approve MP-2 on the pension board. Federal prosecutors alleged his vote was secured through a quid pro quo: a special pension benefit allowing combined salary calculation, worth ~$25,000/year more.",
+    "direction": "directed",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "alleged",
+    "date_start": "2002-07-11",
+    "date_end": "2002-07-11",
+    "tags": [
+      "quid-pro-quo",
+      "mp2",
+      "key-actor"
+    ],
+    "notes": "Classified as 'alleged' because federal charges were dismissed. The vote is verified; the quid pro quo framing is the prosecution's theory."
+  },
+  {
+    "id": "lexin-designed-saathoff-benefit",
+    "from": "cathy-lexin",
+    "to": "ron-saathoff",
+    "type": "financial",
+    "label": "designed special pension benefit",
+    "description": "Lexin was accused of designing the special pension benefit for Saathoff that allowed him to combine salaries when calculating his pension, increasing it by ~$25,000/year. Federal charges dismissed 2010.",
+    "direction": "directed",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "alleged",
+    "date_start": "2002",
+    "date_end": "2002",
+    "tags": [
+      "quid-pro-quo",
+      "special-benefit"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "grissom-devised-saathoff-benefit",
+    "from": "larry-grissom",
+    "to": "ron-saathoff",
+    "type": "financial",
+    "label": "co-devised special pension benefit",
+    "description": "Grissom, as SDCERS administrator, was accused of devising the special benefit for Saathoff in coordination with Lexin, Webster, and Chapin.",
+    "direction": "directed",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "alleged",
+    "date_start": "2002",
+    "date_end": "2002",
+    "tags": [
+      "quid-pro-quo",
+      "special-benefit"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "chapin-concealed-saathoff-benefit",
+    "from": "lori-chapin",
+    "to": "ron-saathoff",
+    "type": "legal",
+    "label": "designed and concealed special benefit",
+    "description": "Chapin, as SDCERS chief pension attorney, was accused of designing and legally concealing the special pension benefit for Saathoff.",
+    "direction": "directed",
+    "sources": [
+      "https://voiceofsandiego.org/topics/government/feds-indict-five-in-sd-pension-scandal/"
+    ],
+    "confidence": "alleged",
+    "date_start": "2002",
+    "date_end": "2002",
+    "tags": [
+      "quid-pro-quo",
+      "special-benefit"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "saathoff-union-president",
+    "from": "ron-saathoff",
+    "to": "firefighters-union-local-145",
+    "type": "employment",
+    "label": "union president",
+    "description": "Saathoff was president of Firefighters Union Local 145 while simultaneously serving as a pension board trustee \u2014 the dual role at the heart of the conflict-of-interest.",
+    "direction": "directed",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "date_start": "2002",
+    "date_end": "2006",
+    "tags": [
+      "union",
+      "conflict-of-interest"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "ryan-false-certifications",
+    "from": "edward-ryan",
+    "to": "public-disclosure-2004",
+    "type": "legal",
+    "label": "signed false audit certifications",
+    "description": "Ryan signed letters falsely representing that the city's audited financials in the bond offerings were accurate, omitting the pension underfunding crisis.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2002",
+    "date_end": "2003",
+    "tags": [
+      "bond-fraud",
+      "false-disclosure"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "vattimo-false-disclosures",
+    "from": "mary-vattimo",
+    "to": "public-disclosure-2004",
+    "type": "legal",
+    "label": "drafted false bond disclosure documents",
+    "description": "Vattimo participated in drafting the misleading bond offering documents that omitted the pension funding crisis.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2002",
+    "date_end": "2003",
+    "tags": [
+      "bond-fraud",
+      "false-disclosure"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "frazier-revised-disclosures",
+    "from": "patricia-frazier",
+    "to": "public-disclosure-2004",
+    "type": "legal",
+    "label": "revised and signed false disclosure documents",
+    "description": "Frazier revised the bond disclosure documents and signed closing letters for two bond offerings that omitted material pension information.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2002",
+    "date_end": "2003",
+    "tags": [
+      "bond-fraud",
+      "false-disclosure"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "saiz-false-audits",
+    "from": "cjo",
+    "to": "public-disclosure-2004",
+    "type": "employment",
+    "label": "issued unqualified audits despite material omissions",
+    "description": "CJO issued unqualified audit reports on bond offerings despite failing to comply with GAAS and failing to identify the material omissions about pension obligations.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2007/2007-257.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2001",
+    "date_end": "2003",
+    "tags": [
+      "bond-fraud",
+      "auditor"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "thomas-saiz-cjo",
+    "from": "thomas-saiz",
+    "to": "cjo",
+    "type": "employment",
+    "label": "principal of firm",
+    "description": "Saiz was the principal responsible for conducting the city audits at CJO.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2007/2007-257.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2001",
+    "date_end": "2003",
+    "tags": [
+      "auditor"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "disclosure-triggered-sp-withdrawal",
+    "from": "public-disclosure-2004",
+    "to": "sp-rating-withdrawal",
+    "type": "financial",
+    "label": "triggered bond rating withdrawal",
+    "description": "The January 2004 public disclosure of pension omissions led S&P to withdraw the city's AA-minus bond rating by September 2004.",
+    "direction": "directed",
+    "sources": [
+      "https://www.pionline.com/article/20080516/ONLINE/939035460/s-p-reinstates-san-diego-city-bond-ratings"
+    ],
+    "confidence": "verified",
+    "date_start": "2004-01",
+    "date_end": "2004-09",
+    "tags": [
+      "consequence",
+      "financial"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "sec-sanctioned-city",
+    "from": "sec",
+    "to": "sec-order-city-2006",
+    "type": "legal",
+    "label": "issued securities fraud order against city",
+    "description": "SEC formally sanctioned the City of San Diego for securities fraud in municipal bond offerings that raised $260 million based on false and misleading disclosures.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2006/2006-170.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2006-11",
+    "date_end": "2006-11",
+    "tags": [
+      "sec",
+      "enforcement"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "sec-charged-auditor",
+    "from": "sec",
+    "to": "sec-auditor-charges-2007",
+    "type": "legal",
+    "label": "charged independent auditor with fraud",
+    "description": "SEC charged Thomas Saiz and CJO with fraud for issuing unqualified audit reports that enabled the false bond disclosures.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2007/2007-257.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2007-12-11",
+    "date_end": "2007-12-11",
+    "tags": [
+      "sec",
+      "enforcement"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "sec-charged-officials",
+    "from": "sec",
+    "to": "sec-official-charges-2008",
+    "type": "legal",
+    "label": "charged five officials with securities fraud",
+    "description": "SEC charged Uberuaga, Ryan, Frazier, Vattimo, and Webster with securities fraud for participating in drafting and certifying false bond disclosures.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2008/2008-57.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2008-04-07",
+    "date_end": "2008-04-07",
+    "tags": [
+      "sec",
+      "enforcement"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "sec-charges-settled",
+    "from": "sec-official-charges-2008",
+    "to": "sec-settlement-2010",
+    "type": "legal",
+    "label": "resolved via settlement",
+    "description": "Four of five SEC defendants settled their charges in October 2010, paying a combined $80,000 in penalties without admitting or denying wrongdoing.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sec.gov/news/press/2010/2010-204.htm"
+    ],
+    "confidence": "verified",
+    "date_start": "2010-10-27",
+    "date_end": "2010-10-27",
+    "tags": [
+      "settlement"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "us-attorney-indicted",
+    "from": "us-attorneys-office",
+    "to": "federal-indictment-2006",
+    "type": "legal",
+    "label": "filed federal fraud indictments",
+    "description": "U.S. Attorney's Office secured federal grand jury indictments against five pension officials on fraud and conspiracy charges related to the Saathoff benefit quid pro quo.",
+    "direction": "directed",
+    "sources": [
+      "https://voiceofsandiego.org/2006/01/06/five-indicted-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "date_start": "2006-01",
+    "date_end": "2006-01",
+    "tags": [
+      "federal",
+      "prosecution"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "federal-charges-dismissed",
+    "from": "federal-indictment-2006",
+    "to": "federal-charges-dismissed-2010",
+    "type": "legal",
+    "label": "dismissed \u2014 statute unconstitutionally vague",
+    "description": "All federal criminal charges against the five pension officials were dismissed when Judge Benitez ruled the honest services fraud statute was unconstitutionally vague.",
+    "direction": "directed",
+    "sources": [
+      "https://www.sandiegouniontribune.com/sdut-five-cleared-in-pension-case-2010apr08-htmlstory.html"
+    ],
+    "confidence": "verified",
+    "date_start": "2010-04-08",
+    "date_end": "2010-04-08",
+    "tags": [
+      "legal-outcome"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "dumanis-filed-da-charges",
+    "from": "bonnie-dumanis",
+    "to": "da-charges-2005",
+    "type": "legal",
+    "label": "filed state felony charges",
+    "description": "DA Dumanis filed state felony charges under California Gov Code 1090 against six officials for conflict-of-interest in the pension benefit deals.",
+    "direction": "directed",
+    "sources": [
+      "https://voiceofsandiego.org/2005/05/17/six-sd-officials-charged-in-pension-scandal/"
+    ],
+    "confidence": "verified",
+    "date_start": "2005-05-17",
+    "date_end": "2005-05-17",
+    "tags": [
+      "prosecution",
+      "state"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "murphy-resigned",
+    "from": "dick-murphy",
+    "to": "murphy-resignation",
+    "type": "political",
+    "label": "resigned amid scandal",
+    "description": "Murphy announced his resignation on April 25, 2005, directly attributable to the pension scandal and federal investigations into the city.",
+    "direction": "directed",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Dick_Murphy"
+    ],
+    "confidence": "verified",
+    "date_start": "2005-04-25",
+    "date_end": "2005-07-15",
+    "tags": [
+      "consequence"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "sanders-succeeded-murphy",
+    "from": "jerry-sanders",
+    "to": "dick-murphy",
+    "type": "political",
+    "label": "succeeded as mayor",
+    "description": "Sanders was elected in the November 2005 special election to succeed Murphy and inherited the pension crisis.",
+    "direction": "directed",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Jerry_Sanders_(politician)"
+    ],
+    "confidence": "verified",
+    "date_start": "2005-12-08",
+    "date_end": null,
+    "tags": [
+      "succession"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "aguirre-challenged-sdcers",
+    "from": "michael-aguirre",
+    "to": "sdcers",
+    "type": "adversarial",
+    "label": "attempted to overturn illegal benefits",
+    "description": "City Attorney Aguirre took control of SDCERS's legal affairs in December 2005, seized documents, and attempted to invalidate $900M in pension benefit increases, ultimately without success.",
+    "direction": "directed",
+    "sources": [
+      "https://voiceofsandiego.org/2005/08/17/aguirre-wants-city-to-admit-errors-settle-with-sec/"
+    ],
+    "confidence": "verified",
+    "date_start": "2005-12",
+    "date_end": "2008",
+    "tags": [
+      "legal-challenge",
+      "city-attorney"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "mp1-led-to-mp2",
+    "from": "mp1",
+    "to": "mp2-board-vote",
+    "type": "financial",
+    "label": "structural precedent for second underfunding deal",
+    "description": "MP-1's benefit increases and underfunding mechanism created the fiscal conditions that led to MP-2 \u2014 the fund fell below required levels, prompting a second underfunding agreement rather than corrective action.",
+    "direction": "directed",
+    "sources": [
+      "https://docs.sandiego.gov/legalopinions/LO-2007-2.pdf"
+    ],
+    "confidence": "verified",
+    "date_start": "1996",
+    "date_end": "2002",
+    "tags": [
+      "underfunding",
+      "mp1",
+      "mp2"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "mp2-board-to-council",
+    "from": "mp2-board-vote",
+    "to": "mp2-council-vote",
+    "type": "political",
+    "label": "approved by board; forwarded to council",
+    "description": "After the pension board voted to approve MP-2 in July 2002, the City Council voted to ratify and implement the benefit increases in November 2002.",
+    "direction": "directed",
+    "sources": [
+      "https://en.wikipedia.org/wiki/San_Diego_pension_scandal"
+    ],
+    "confidence": "verified",
+    "date_start": "2002-07",
+    "date_end": "2002-11",
+    "tags": [
+      "mp2",
+      "vote"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "mp2-created-deficit",
+    "from": "mp2-council-vote",
+    "to": "public-disclosure-2004",
+    "type": "financial",
+    "label": "created ~$1.35B unfunded liability",
+    "description": "The combined effect of MP-1 and MP-2 created an unfunded pension liability estimated at $1.35-2.2 billion that was eventually disclosed in January 2004.",
+    "direction": "directed",
+    "sources": [
+      "https://en.wikipedia.org/wiki/San_Diego_pension_scandal"
+    ],
+    "confidence": "verified",
+    "date_start": "2002-11",
+    "date_end": "2004-01",
+    "tags": [
+      "underfunding",
+      "consequence"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "sp-withdrew-then-reinstated",
+    "from": "sp-rating-withdrawal",
+    "to": "sp-reinstatement-2008",
+    "type": "financial",
+    "label": "four-year bond market exclusion",
+    "description": "S&P's 2004 rating withdrawal effectively locked San Diego out of the bond market for four years. The 2008 reinstatement came at a lower rating (A vs. former AA-minus).",
+    "direction": "directed",
+    "sources": [
+      "https://www.pionline.com/article/20080516/ONLINE/939035460/s-p-reinstates-san-diego-city-bond-ratings"
+    ],
+    "confidence": "verified",
+    "date_start": "2004-09",
+    "date_end": "2008",
+    "tags": [
+      "consequence",
+      "financial"
+    ],
+    "notes": ""
+  }
+]

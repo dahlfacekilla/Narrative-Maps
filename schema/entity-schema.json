@@ -1,0 +1,33 @@
+{
+  "_comment": "Entity (node) schema for Narrative Structures investigations. Each entity is a person, organization, event, document, or concept.",
+  "_kumu_import_field": "elements",
+  "schema": {
+    "id": "string — unique slug, e.g. 'david-waid' or 'sdcers'",
+    "label": "string — display name on the graph",
+    "type": "enum — person | organization | event | legislation | fund | document | concept",
+    "description": "string — 1-3 sentence summary",
+    "role": "string — their role in the investigation context",
+    "sources": "array of URL strings",
+    "confidence": "enum — verified | reported | alleged | inferred",
+    "first_seen": "YYYY-MM-DD or YYYY — earliest known relevant date",
+    "last_seen": "YYYY-MM-DD or YYYY or null",
+    "tags": "array of strings — for filtering in Kumu",
+    "notes": "string — manual annotations, open field"
+  },
+  "example": {
+    "id": "example-person",
+    "label": "Jane Smith",
+    "type": "person",
+    "description": "City council member who voted in favor of the pension benefit increase in 2002.",
+    "role": "elected official",
+    "sources": [
+      "https://example.com/article1",
+      "https://example.com/court-filing"
+    ],
+    "confidence": "verified",
+    "first_seen": "2002",
+    "last_seen": "2005",
+    "tags": ["city-council", "key-actor"],
+    "notes": ""
+  }
+}
