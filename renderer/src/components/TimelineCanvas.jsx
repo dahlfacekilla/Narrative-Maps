@@ -15,6 +15,7 @@
  */
 
 import { useMemo } from 'react'
+import { useTheme } from '../ThemeContext.jsx'
 import {
   CANVAS_X_PADDING,
   CHAPTER_HEADER_HEIGHT,
@@ -104,7 +105,9 @@ export function TimelineCanvas({
   onSelectEntity,
   focusMode,
   focusedEventId,
+  fontFamily,
 }) {
+  const { theme } = useTheme()
   const {
     rows,
     groupBands,
@@ -196,7 +199,7 @@ export function TimelineCanvas({
               <rect x={ch.x} y={0} width={3} height={CHAPTER_HEADER_HEIGHT} fill={ch.color} />
               <text
                 x={ch.x + 10} y={CHAPTER_HEADER_HEIGHT - 10}
-                fill={ch.color} fontSize={10} fontFamily="monospace"
+                fill={ch.color} fontSize={10} fontFamily={fontFamily ?? 'Barlow, sans-serif'}
                 fontWeight="bold" letterSpacing="0.06em" opacity={0.85}
               >
                 {ch.label.toUpperCase()}
@@ -214,7 +217,7 @@ export function TimelineCanvas({
               />
               <text
                 x={tick.x} y={canvasHeight - 6}
-                fill="#2e2e2e" fontSize={8.5} fontFamily="monospace"
+                fill="#2e2e2e" fontSize={8.5} fontFamily={fontFamily ?? 'Barlow, sans-serif'}
                 textAnchor="middle" letterSpacing="0.06em"
               >
                 {tick.label}
@@ -248,14 +251,14 @@ export function TimelineCanvas({
                 )}
                 <text
                   x={zone.centerX} y={CHAPTER_HEADER_HEIGHT + 13}
-                  fill={markerColor} fontSize={8} fontFamily="monospace"
+                  fill={markerColor} fontSize={8} fontFamily={fontFamily ?? 'Barlow, sans-serif'}
                   textAnchor="middle" letterSpacing="0.06em" opacity={0.7}
                 >
                   {formatDateLabel(event.date)}
                 </text>
                 <text
                   x={zone.centerX} y={CHAPTER_HEADER_HEIGHT + 25}
-                  fill={labelColor} fontSize={7.5} fontFamily="monospace"
+                  fill={labelColor} fontSize={7.5} fontFamily={fontFamily ?? 'Barlow, sans-serif'}
                   textAnchor="middle" letterSpacing="0.03em"
                 >
                   {truncate(event.label, 22)}
@@ -351,7 +354,7 @@ export function TimelineCanvas({
                 >
                   <circle
                     cx={cx} cy={cy} r={r}
-                    fill="#0d0d0d"
+                    fill={theme.bgApp}
                     stroke={color}
                     strokeWidth={isSelected ? ENTITY_ICON_RING * 2 : ENTITY_ICON_RING}
                   />
@@ -360,7 +363,7 @@ export function TimelineCanvas({
                     textAnchor="middle"
                     fill={color}
                     fontSize={8}
-                    fontFamily="monospace"
+                    fontFamily={fontFamily ?? 'Barlow, sans-serif'}
                     fontWeight="bold"
                     letterSpacing="0.04em"
                   >

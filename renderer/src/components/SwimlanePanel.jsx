@@ -6,6 +6,7 @@
  */
 
 import { LEFT_PANEL_WIDTH, LEFT_PANEL_ICON_SIZE } from '../constants.js'
+import { useTheme } from '../ThemeContext.jsx'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -24,6 +25,7 @@ function initials(label) {
 function EntityEntry({ row, onEntityClick }) {
   const { entity, affiliation, y, height } = row
   const color = affiliation.color
+  const { theme } = useTheme()
 
   return (
     <div
@@ -57,7 +59,6 @@ function EntityEntry({ row, onEntityClick }) {
           fontSize: 9,
           fontWeight: 'bold',
           color,
-          fontFamily: 'monospace',
           letterSpacing: '0.04em',
           userSelect: 'none',
         }}
@@ -71,8 +72,7 @@ function EntityEntry({ row, onEntityClick }) {
           style={{
             fontSize: 10,
             fontWeight: 600,
-            color: '#ccc',
-            fontFamily: 'monospace',
+            color: theme.textSecondary,
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -86,8 +86,7 @@ function EntityEntry({ row, onEntityClick }) {
             style={{
               marginTop: 2,
               fontSize: 8,
-              color: '#555',
-              fontFamily: 'monospace',
+              color: theme.textVeryDim,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -105,15 +104,15 @@ function EntityEntry({ row, onEntityClick }) {
 // ─── SwimlanePanel ────────────────────────────────────────────────────────────
 
 export function SwimlanePanel({ rows, groupBands, canvasHeight, onEntityClick }) {
+  const { theme } = useTheme()
   return (
     <div
       style={{
         width: LEFT_PANEL_WIDTH,
         height: canvasHeight,
         position: 'relative',
-        background: '#0d0d0d',
+        background: theme.bgApp,
         flexShrink: 0,
-        fontFamily: 'monospace',
         overflow: 'hidden',
       }}
     >

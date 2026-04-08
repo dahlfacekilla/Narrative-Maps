@@ -13,6 +13,7 @@
 import { useMemo } from 'react'
 import { formatDateLabel } from '../layout/timeAxis.js'
 import { AFFILIATION_COLORS, CONFIDENCE_COLOR, RELATIONSHIP_COLORS } from '../constants.js'
+import { useTheme } from '../ThemeContext.jsx'
 
 const PANEL_HEIGHT = 220
 
@@ -29,7 +30,6 @@ function Badge({ label, color }) {
         color,
         letterSpacing: '0.08em',
         textTransform: 'uppercase',
-        fontFamily: 'monospace',
       }}
     >
       {label}
@@ -38,6 +38,7 @@ function Badge({ label, color }) {
 }
 
 function SourceLink({ source }) {
+  const { theme } = useTheme()
   const url = typeof source === 'string' ? source : source?.url
   const title = typeof source === 'string' ? null : source?.title
   const display = title ?? (url ? new URL(url).hostname : 'source')
@@ -46,7 +47,7 @@ function SourceLink({ source }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      style={{ color: '#4a90d9', fontSize: 9, textDecoration: 'none' }}
+      style={{ color: theme.link, fontSize: 9, textDecoration: 'none' }}
     >
       {display}
     </a>
@@ -56,41 +57,42 @@ function SourceLink({ source }) {
 // ─── Event Panel ──────────────────────────────────────────────────────────────
 
 function EventPanel({ event, relationships, entityById }) {
+  const { theme } = useTheme()
   const eventRels = relationships.filter(r => r.event_id === event.id)
 
   return (
     <div style={{ display: 'flex', gap: 24, height: '100%' }}>
       {/* Left: event meta */}
       <div style={{ width: 220, flexShrink: 0 }}>
-        <div style={{ fontSize: 12, fontWeight: 'bold', color: '#ddd', lineHeight: 1.3, marginBottom: 4 }}>
+        <div style={{ fontSize: 12, fontWeight: 'bold', color: theme.textPrimary, lineHeight: 1.3, marginBottom: 4 }}>
           {event.label}
         </div>
-        <div style={{ fontSize: 9, color: '#666', marginBottom: 8, letterSpacing: '0.04em' }}>
+        <div style={{ fontSize: 9, color: theme.textDim, marginBottom: 8, letterSpacing: '0.04em' }}>
           {formatDateLabel(event.date)}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
           <Badge label={event.confidence} color={CONFIDENCE_COLOR[event.confidence] ?? '#888'} />
           {(event.tags ?? []).map(t => (
-            <Badge key={t} label={t} color="#444" />
+            <Badge key={t} label={t} color={theme.textGhost} />
           ))}
         </div>
         {event.description && (
-          <div style={{ fontSize: 9.5, color: '#888', lineHeight: 1.55 }}>
+          <div style={{ fontSize: 9.5, color: theme.textMuted, lineHeight: 1.55 }}>
             {event.description}
           </div>
         )}
       </div>
 
       {/* Divider */}
-      <div style={{ width: 1, background: '#1e1e1e', flexShrink: 0 }} />
+      <div style={{ width: 1, background: theme.borderStrong, flexShrink: 0 }} />
 
       {/* Center: relationships */}
       <div style={{ flex: 1, minWidth: 0, overflowY: 'auto' }}>
-        <div style={{ fontSize: 8, color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+        <div style={{ fontSize: 8, color: theme.textGhost, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
           Relationships
         </div>
         {eventRels.length === 0 && (
-          <div style={{ fontSize: 9, color: '#444' }}>No relationships recorded for this event.</div>
+          <div style={{ fontSize: 9, color: theme.textGhost }}>No relationships recorded for this event.</div>
         )}
         {eventRels.map(rel => {
           const fromEnt = entityById.get(rel.from)
@@ -109,19 +111,19 @@ function EventPanel({ event, relationships, entityById }) {
                 }}
               />
               <div>
-                <div style={{ fontSize: 9.5, color: '#bbb', lineHeight: 1.4 }}>
-                  <span style={{ color: AFFILIATION_COLORS[fromEnt?.affiliation_id] ?? '#aaa' }}>
+                <div style={{ fontSize: 9.5, color: theme.textSecondary, lineHeight: 1.4 }}>
+                  <span style={{ color: AFFILIATION_COLORS[fromEnt?.affiliation_id] ?? theme.textMuted }}>
                     {fromEnt?.label ?? rel.from}
                   </span>
-                  <span style={{ color: '#444', margin: '0 5px' }}>→</span>
+                  <span style={{ color: theme.textGhost, margin: '0 5px' }}>→</span>
                   <span style={{ color, fontStyle: 'italic' }}>{rel.label}</span>
-                  <span style={{ color: '#444', margin: '0 5px' }}>→</span>
-                  <span style={{ color: AFFILIATION_COLORS[toEnt?.affiliation_id] ?? '#aaa' }}>
+                  <span style={{ color: theme.textGhost, margin: '0 5px' }}>→</span>
+                  <span style={{ color: AFFILIATION_COLORS[toEnt?.affiliation_id] ?? theme.textMuted }}>
                     {toEnt?.label ?? rel.to}
                   </span>
                 </div>
                 {rel.description && (
-                  <div style={{ fontSize: 8.5, color: '#555', marginTop: 2, lineHeight: 1.4 }}>
+                  <div style={{ fontSize: 8.5, color: theme.textVeryDim, marginTop: 2, lineHeight: 1.4 }}>
                     {rel.description}
                   </div>
                 )}
@@ -134,9 +136,9 @@ function EventPanel({ event, relationships, entityById }) {
       {/* Right: sources */}
       {(event.sources ?? []).length > 0 && (
         <>
-          <div style={{ width: 1, background: '#1e1e1e', flexShrink: 0 }} />
+          <div style={{ width: 1, background: theme.borderStrong, flexShrink: 0 }} />
           <div style={{ width: 180, flexShrink: 0 }}>
-            <div style={{ fontSize: 8, color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <div style={{ fontSize: 8, color: theme.textGhost, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
               Sources
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -154,6 +156,7 @@ function EventPanel({ event, relationships, entityById }) {
 // ─── Entity Panel ─────────────────────────────────────────────────────────────
 
 function EntityPanel({ entity, entityEvents, affiliations, onSelectEvent }) {
+  const { theme } = useTheme()
   const affiliation = affiliations.find(a => a.id === entity.affiliation_id)
   const color = affiliation?.color ?? AFFILIATION_COLORS[entity.affiliation_id] ?? '#888'
 
@@ -176,14 +179,13 @@ function EntityPanel({ entity, entityEvents, affiliations, onSelectEvent }) {
               fontSize: 11,
               fontWeight: 'bold',
               color,
-              fontFamily: 'monospace',
               flexShrink: 0,
             }}
           >
             {entity.label.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase()}
           </div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 'bold', color: '#ddd', lineHeight: 1.2 }}>
+            <div style={{ fontSize: 12, fontWeight: 'bold', color: theme.textPrimary, lineHeight: 1.2 }}>
               {entity.label}
             </div>
             {entity.role && (
@@ -195,7 +197,7 @@ function EntityPanel({ entity, entityEvents, affiliations, onSelectEvent }) {
         </div>
 
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
-          <Badge label={entity.type} color="#555" />
+          <Badge label={entity.type} color={theme.textVeryDim} />
           {entity.confidence && (
             <Badge label={entity.confidence} color={CONFIDENCE_COLOR[entity.confidence] ?? '#888'} />
           )}
@@ -203,13 +205,13 @@ function EntityPanel({ entity, entityEvents, affiliations, onSelectEvent }) {
         </div>
 
         {entity.description && (
-          <div style={{ fontSize: 9.5, color: '#888', lineHeight: 1.55, marginBottom: 8 }}>
+          <div style={{ fontSize: 9.5, color: theme.textMuted, lineHeight: 1.55, marginBottom: 8 }}>
             {entity.description}
           </div>
         )}
 
         {(entity.first_seen || entity.last_seen) && (
-          <div style={{ fontSize: 8.5, color: '#555', marginBottom: 6 }}>
+          <div style={{ fontSize: 8.5, color: theme.textVeryDim, marginBottom: 6 }}>
             {entity.first_seen && <span>From {entity.first_seen}</span>}
             {entity.first_seen && entity.last_seen && <span style={{ margin: '0 4px' }}>·</span>}
             {entity.last_seen && <span>To {entity.last_seen}</span>}
@@ -226,15 +228,15 @@ function EntityPanel({ entity, entityEvents, affiliations, onSelectEvent }) {
       </div>
 
       {/* Divider */}
-      <div style={{ width: 1, background: '#1e1e1e', flexShrink: 0 }} />
+      <div style={{ width: 1, background: theme.borderStrong, flexShrink: 0 }} />
 
       {/* Right: events this entity participates in */}
       <div style={{ flex: 1, minWidth: 0, overflowY: 'auto' }}>
-        <div style={{ fontSize: 8, color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+        <div style={{ fontSize: 8, color: theme.textGhost, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
           Appears In
         </div>
         {entityEvents.length === 0 && (
-          <div style={{ fontSize: 9, color: '#444' }}>No events found for this entity.</div>
+          <div style={{ fontSize: 9, color: theme.textGhost }}>No events found for this entity.</div>
         )}
         {entityEvents.map(ev => (
           <button
@@ -252,10 +254,10 @@ function EntityPanel({ entity, entityEvents, affiliations, onSelectEvent }) {
               textAlign: 'left',
             }}
           >
-            <span style={{ fontSize: 8, color: '#555', fontFamily: 'monospace', flexShrink: 0 }}>
+            <span style={{ fontSize: 8, color: theme.textVeryDim, flexShrink: 0 }}>
               {formatDateLabel(ev.date)}
             </span>
-            <span style={{ fontSize: 9.5, color: '#aaa', fontFamily: 'monospace' }}>
+            <span style={{ fontSize: 9.5, color: theme.textMuted }}>
               {ev.label}
             </span>
           </button>
@@ -268,6 +270,7 @@ function EntityPanel({ entity, entityEvents, affiliations, onSelectEvent }) {
 // ─── DetailPanel ──────────────────────────────────────────────────────────────
 
 export function DetailPanel({ selection, data, onDismiss, onSelectEvent }) {
+  const { theme } = useTheme()
   const { events, relationships, entities } = data
 
   const entityById = useMemo(() => {
@@ -323,8 +326,8 @@ export function DetailPanel({ selection, data, onDismiss, onSelectEvent }) {
         height: visible ? PANEL_HEIGHT : 0,
         overflow: 'hidden',
         transition: 'height 0.18s ease',
-        background: '#0f0f0f',
-        borderTop: visible ? '1px solid #1e1e1e' : 'none',
+        background: theme.bgDetail,
+        borderTop: visible ? `1px solid ${theme.borderStrong}` : 'none',
         flexShrink: 0,
       }}
     >
@@ -333,7 +336,6 @@ export function DetailPanel({ selection, data, onDismiss, onSelectEvent }) {
           style={{
             height: PANEL_HEIGHT,
             padding: '14px 20px',
-            fontFamily: 'monospace',
             boxSizing: 'border-box',
             position: 'relative',
           }}
@@ -347,7 +349,7 @@ export function DetailPanel({ selection, data, onDismiss, onSelectEvent }) {
               right: 14,
               background: 'none',
               border: 'none',
-              color: '#444',
+              color: theme.textGhost,
               cursor: 'pointer',
               fontSize: 13,
               padding: 4,

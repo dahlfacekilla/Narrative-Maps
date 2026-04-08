@@ -26,6 +26,7 @@ import { TimelineCanvas } from './components/TimelineCanvas.jsx'
 import { DetailPanel } from './components/DetailPanel.jsx'
 import { Legend } from './components/Legend.jsx'
 import { LEFT_PANEL_WIDTH, CANVAS_X_PADDING } from './constants.js'
+import { useTheme } from './ThemeContext.jsx'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -33,6 +34,10 @@ const TOP_BAR_HEIGHT = 44
 const ZOOM_MIN = 0.2
 const ZOOM_MAX = 4.0
 const ZOOM_FACTOR = 0.1  // fraction of current zoom per wheel tick
+
+const PAGE_ZOOM_MIN = 0.75
+const PAGE_ZOOM_MAX = 1.5
+const PAGE_ZOOM_STEP = 0.1
 
 const SCALE_LABELS = {
   [SCALE_MODES.COMPRESSED]:   'Comp.',
@@ -43,6 +48,12 @@ const SCALE_LABELS = {
 const SCALE_ORDER = [SCALE_MODES.COMPRESSED, SCALE_MODES.PROPORTIONAL, SCALE_MODES.UNIFORM]
 
 // ─── TopBar ───────────────────────────────────────────────────────────────────
+
+const FONT_OPTIONS = [
+  { value: 'Barlow, sans-serif', label: 'Barlow' },
+  { value: 'Inter, sans-serif',  label: 'Inter' },
+  { value: 'monospace',          label: 'Mono' },
+]
 
 function TopBar({
   investigationLabel,
@@ -59,26 +70,33 @@ function TopBar({
   activeChapterId,
   onScrollToChapter,
   affiliations,
+  fontFamily,
+  onFontChange,
+  pageZoom,
+  onPageZoomIn,
+  onPageZoomOut,
+  theme,
+  isDark,
+  onToggleTheme,
 }) {
   return (
     <div
       style={{
         height: TOP_BAR_HEIGHT,
         flexShrink: 0,
-        background: '#111',
-        borderBottom: '1px solid #1a1a1a',
+        background: theme.bgPanel,
+        borderBottom: `1px solid ${theme.borderStrong}`,
         display: 'flex',
         alignItems: 'center',
         gap: 10,
         padding: '0 14px',
-        fontFamily: 'monospace',
         userSelect: 'none',
         overflow: 'hidden',
       }}
     >
       {/* Title */}
       <div style={{ flexShrink: 0 }}>
-        <div style={{ fontSize: 10, fontWeight: 'bold', letterSpacing: '0.1em', color: '#ccc' }}>
+        <div style={{ fontSize: 10, fontWeight: 'bold', letterSpacing: '0.1em', color: theme.textSecondary }}>
           {investigationLabel?.toUpperCase() ?? 'NARRATIVE STRUCTURES'}
         </div>
       </div>
@@ -87,7 +105,7 @@ function TopBar({
 
       {/* Scale mode */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
-        <span style={{ fontSize: 7.5, color: '#444', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+        <span style={{ fontSize: 7.5, color: theme.textGhost, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
           Scale
         </span>
         {SCALE_ORDER.map(mode => (
@@ -118,9 +136,51 @@ function TopBar({
       {/* Zoom controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
         <ToolbarButton label="Fit" onClick={onFit} />
-        <span style={{ fontSize: 8, color: '#444', minWidth: 28, textAlign: 'center' }}>
+        <span style={{ fontSize: 8, color: theme.textGhost, minWidth: 28, textAlign: 'center' }}>
           {Math.round(zoom * 100)}%
         </span>
+      </div>
+
+      <Divider />
+
+      {/* Font picker */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+        <span style={{ fontSize: 7.5, color: theme.textGhost, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Font
+        </span>
+        <select
+          value={fontFamily}
+          onChange={e => onFontChange(e.target.value)}
+          style={{
+            background: theme.bgPanel,
+            color: theme.textVeryDim,
+            border: `1px solid ${theme.borderSoft}`,
+            borderRadius: 2,
+            fontSize: 8.5,
+            padding: '2px 4px',
+            cursor: 'pointer',
+          }}
+        >
+          {FONT_OPTIONS.map(opt => (
+            <option key={opt.value} value={opt.value} style={{ background: theme.bgPanel, color: theme.textPrimary }}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <Divider />
+
+      {/* Page (UI) zoom controls */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+        <span style={{ fontSize: 7.5, color: theme.textGhost, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          UI
+        </span>
+        <ToolbarButton label="−" onClick={onPageZoomOut} />
+        <span style={{ fontSize: 8, color: theme.textGhost, minWidth: 28, textAlign: 'center' }}>
+          {Math.round(pageZoom * 100)}%
+        </span>
+        <ToolbarButton label="+" onClick={onPageZoomIn} />
       </div>
 
       <Divider />
@@ -139,12 +199,11 @@ function TopBar({
                 style={{
                   padding: '2px 8px',
                   fontSize: 8,
-                  fontFamily: 'monospace',
                   letterSpacing: '0.04em',
                   cursor: bounds ? 'pointer' : 'default',
                   background: isActive ? `${ch.color}22` : 'transparent',
-                  color: isActive ? ch.color : '#555',
-                  border: `1px solid ${isActive ? `${ch.color}55` : '#222'}`,
+                  color: isActive ? ch.color : theme.textVeryDim,
+                  border: `1px solid ${isActive ? `${ch.color}55` : theme.borderMid}`,
                   borderRadius: 2,
                   flexShrink: 0,
                   whiteSpace: 'nowrap',
@@ -157,31 +216,33 @@ function TopBar({
         </div>
       )}
 
-      {/* Legend pushed to far right */}
-      <div style={{ marginLeft: 'auto', flexShrink: 0 }}>
-        <Legend affiliations={affiliations} />
+      {/* Theme toggle + Legend pushed to far right */}
+      <div style={{ marginLeft: 'auto', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+        <ToolbarButton label={isDark ? '☀' : '☾'} onClick={onToggleTheme} />
+        <Legend affiliations={affiliations} theme={theme} />
       </div>
     </div>
   )
 }
 
 function Divider() {
-  return <div style={{ width: 1, height: 24, background: '#222', flexShrink: 0 }} />
+  const { theme } = useTheme()
+  return <div style={{ width: 1, height: 24, background: theme.borderMid, flexShrink: 0 }} />
 }
 
 function ToolbarButton({ label, active, onClick }) {
+  const { theme } = useTheme()
   return (
     <button
       onClick={onClick}
       style={{
         padding: '3px 8px',
         fontSize: 8.5,
-        fontFamily: 'monospace',
         letterSpacing: '0.06em',
         cursor: 'pointer',
-        background: active ? '#1e2a3a' : 'transparent',
-        color: active ? '#6aaaf5' : '#555',
-        border: `1px solid ${active ? '#4a90d944' : '#2a2a2a'}`,
+        background: active ? theme.bgSubtle : 'transparent',
+        color: active ? theme.accent : theme.textVeryDim,
+        border: `1px solid ${active ? theme.accentBorder : theme.borderSoft}`,
         borderRadius: 2,
       }}
     >
@@ -194,6 +255,33 @@ function ToolbarButton({ label, active, onClick }) {
 
 export default function App() {
   const { data } = useInvestigation()
+
+  // ── Font family ──────────────────────────────────────────────────────────────
+  const [fontFamily, setFontFamily] = useState(
+    () => localStorage.getItem('ns-font') ?? 'Barlow, sans-serif'
+  )
+  const handleFontChange = useCallback((value) => {
+    setFontFamily(value)
+    localStorage.setItem('ns-font', value)
+  }, [])
+
+  // ── Page (UI) zoom ───────────────────────────────────────────────────────────
+  const [pageZoom, setPageZoom] = useState(() => {
+    const saved = parseFloat(localStorage.getItem('ns-page-zoom'))
+    return isNaN(saved) ? 1.0 : Math.max(PAGE_ZOOM_MIN, Math.min(PAGE_ZOOM_MAX, saved))
+  })
+  useEffect(() => {
+    document.documentElement.style.zoom = pageZoom
+    localStorage.setItem('ns-page-zoom', pageZoom)
+  }, [pageZoom])
+  const handlePageZoomIn = useCallback(
+    () => setPageZoom(z => Math.min(PAGE_ZOOM_MAX, parseFloat((z + PAGE_ZOOM_STEP).toFixed(2)))),
+    [],
+  )
+  const handlePageZoomOut = useCallback(
+    () => setPageZoom(z => Math.max(PAGE_ZOOM_MIN, parseFloat((z - PAGE_ZOOM_STEP).toFixed(2)))),
+    [],
+  )
 
   // ── Scale mode ───────────────────────────────────────────────────────────────
   const [scaleMode, setScaleMode] = useState(null)  // null = auto-detect
@@ -373,16 +461,20 @@ export default function App() {
     return null
   }, [focusMode, focusedEventId, selectedEntityId, selectedEventId])
 
+  // ── Theme ────────────────────────────────────────────────────────────────────
+  const { theme, isDark, toggleTheme } = useTheme()
+
   // ── Render ───────────────────────────────────────────────────────────────────
   return (
     <div
       style={{
         width: '100vw',
         height: '100vh',
-        background: '#0d0d0d',
+        background: theme.bgApp,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        fontFamily,
       }}
     >
       {/* Top bar */}
@@ -401,6 +493,14 @@ export default function App() {
         activeChapterId={activeChapterId}
         onScrollToChapter={handleScrollToChapter}
         affiliations={data.affiliations ?? []}
+        fontFamily={fontFamily}
+        onFontChange={handleFontChange}
+        pageZoom={pageZoom}
+        onPageZoomIn={handlePageZoomIn}
+        onPageZoomOut={handlePageZoomOut}
+        theme={theme}
+        isDark={isDark}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Scrollable area: swimlane panel (sticky) + timeline SVG */}
@@ -411,7 +511,7 @@ export default function App() {
           flex: 1,
           overflow: 'auto',
           display: 'flex',
-          background: '#0d0d0d',
+          background: theme.bgApp,
         }}
       >
         {/* Sticky left panel — scaled via inner wrapper so scroll area size is correct */}
@@ -423,8 +523,8 @@ export default function App() {
             position: 'sticky',
             left: 0,
             zIndex: 20,
-            background: '#0d0d0d',
-            borderRight: '1px solid #1a1a1a',
+            background: theme.bgApp,
+            borderRight: `1px solid ${theme.borderStrong}`,
             overflow: 'hidden',
           }}
         >
@@ -458,6 +558,7 @@ export default function App() {
             onSelectEntity={handleSelectEntity}
             focusMode={focusMode}
             focusedEventId={focusedEventId}
+            fontFamily={fontFamily}
           />
         </div>
       </div>
