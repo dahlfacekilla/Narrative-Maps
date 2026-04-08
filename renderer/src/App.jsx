@@ -33,7 +33,10 @@ import { useTheme } from './ThemeContext.jsx'
 const TOP_BAR_HEIGHT = 44
 const ZOOM_MIN = 0.2
 const ZOOM_MAX = 4.0
-const ZOOM_FACTOR = 0.1  // fraction of current zoom per wheel tick
+// Scale factor per unit of deltaY; clamped so a mouse-wheel tick (~100 deltaY)
+// still gives ~10% while small pinch deltas give proportionally tiny steps.
+const ZOOM_DELTA_SCALE = 0.002
+const ZOOM_DELTA_CAP   = 50    // max deltaY used (beyond this, capped at 10%)
 
 const PAGE_ZOOM_MIN = 0.75
 const PAGE_ZOOM_MAX = 1.5
@@ -327,7 +330,8 @@ export default function App() {
 
       const currentZoom = zoomRef.current
       const direction = e.deltaY > 0 ? -1 : 1
-      const newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, currentZoom * (1 + direction * ZOOM_FACTOR)))
+      const scaledDelta = Math.min(Math.abs(e.deltaY), ZOOM_DELTA_CAP) * ZOOM_DELTA_SCALE
+      const newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, currentZoom * (1 + direction * scaledDelta)))
 
       // Zoom toward cursor: keep the content point under the mouse at the same screen position
       const rect = container.getBoundingClientRect()
