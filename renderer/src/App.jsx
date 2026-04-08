@@ -1,460 +1,579 @@
-import { useMemo, useCallback, useState } from 'react'
-import {
-  ReactFlow,
-  Background,
-  Controls,
-  MiniMap,
-  MarkerType,
-  Panel,
-  useNodesState,
-  useEdgesState,
-  Handle,
-  Position,
-} from '@xyflow/react'
-import '@xyflow/react/dist/style.css'
-import './index.css'
+/**
+ * App — root component for Narrative Structures renderer v2.
+ *
+ * Layout (column flex):
+ *   ┌──────────────────────────────────────────────┐  TopBar (44px)
+ *   ├──────────┬───────────────────────────────────┤
+ *   │ Swimlane │ TimelineCanvas (scrollable SVG)   │  scrollArea (flex:1)
+ *   │ Panel    │                                   │
+ *   ├──────────┴───────────────────────────────────┤
+ *   │ DetailPanel (slide-up, 0 or 220px)           │
+ *   └──────────────────────────────────────────────┘
+ *
+ * Interactions:
+ *   - Ctrl+scroll → zoom toward cursor (Steps 3)
+ *   - F key → toggle Focus Mode (Step 5)
+ *   - Arrow keys → navigate events in Focus Mode (Step 5)
+ *   - Esc → exit Focus Mode (Step 5)
+ *   - Chapter tabs → scroll to chapter (Step 6)
+ */
 
-import entitiesRaw from '../../investigations/san-diego-pension-crisis/entities.json'
-import relationshipsRaw from '../../investigations/san-diego-pension-crisis/relationships.json'
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
+import { useInvestigation } from './hooks/useInvestigation.js'
+import { computeLayout, SCALE_MODES } from './layout/index.js'
+import { SwimlanePanel } from './components/SwimlanePanel.jsx'
+import { TimelineCanvas } from './components/TimelineCanvas.jsx'
+import { DetailPanel } from './components/DetailPanel.jsx'
+import { Legend } from './components/Legend.jsx'
+import { LEFT_PANEL_WIDTH, CANVAS_X_PADDING } from './constants.js'
+import { useTheme } from './ThemeContext.jsx'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const YEAR_WIDTH = 260       // px per year along x-axis
-const LANE_HEIGHT = 68       // px per timeline_y unit
-const X_ORIGIN_YEAR = 1999   // year at x=0 (so 2000 → 260px, 2002 → 780px, etc.)
-const X_OFFSET = 180         // left margin (for swimlane labels)
-const Y_OFFSET = 40          // top margin
+const TOP_BAR_HEIGHT = 44
+const ZOOM_MIN = 0.2
+const ZOOM_MAX = 4.0
+// Scale factor per unit of deltaY; clamped so a mouse-wheel tick (~100 deltaY)
+// still gives ~10% while small pinch deltas give proportionally tiny steps.
+const ZOOM_DELTA_SCALE = 0.002
+const ZOOM_DELTA_CAP   = 50    // max deltaY used (beyond this, capped at 10%)
 
-const AFFILIATION_COLORS = {
-  'city-administration': { bg: 'rgba(20,50,88,0.4)',  border: '#4a90d9', label: '#6aaaf5', dot: '#4a90d9' },
-  'pension-board':       { bg: 'rgba(70,38,0,0.4)',   border: '#e67e22', label: '#f0a050', dot: '#e67e22' },
-  'political':           { bg: 'rgba(52,20,80,0.4)',  border: '#9b59b6', label: '#c080e0', dot: '#9b59b6' },
-  'whistleblower':       { bg: 'rgba(18,60,30,0.4)',  border: '#27ae60', label: '#50d080', dot: '#27ae60' },
-  'enforcement':         { bg: 'rgba(72,20,20,0.4)',  border: '#e74c3c', label: '#f08080', dot: '#e74c3c' },
-  'external':            { bg: 'rgba(36,36,36,0.4)',  border: '#888',    label: '#aaa',    dot: '#888'    },
+const PAGE_ZOOM_MIN = 0.75
+const PAGE_ZOOM_MAX = 1.5
+const PAGE_ZOOM_STEP = 0.1
+
+const SCALE_LABELS = {
+  [SCALE_MODES.COMPRESSED]:   'Comp.',
+  [SCALE_MODES.PROPORTIONAL]: 'Prop.',
+  [SCALE_MODES.UNIFORM]:      'Uniform',
 }
 
-const CONNECTION_STYLE = {
-  verified:  { strokeWidth: 1.5, strokeDasharray: undefined, opacity: 0.75 },
-  reported:  { strokeWidth: 1.2, strokeDasharray: '7,4',     opacity: 0.65 },
-  alleged:   { strokeWidth: 1.0, strokeDasharray: '3,5',     opacity: 0.45 },
-  inferred:  { strokeWidth: 0.8, strokeDasharray: '2,7',     opacity: 0.35 },
-}
+const SCALE_ORDER = [SCALE_MODES.COMPRESSED, SCALE_MODES.PROPORTIONAL, SCALE_MODES.UNIFORM]
 
-const CONNECTION_COLOR = {
-  financial:   '#f5a623',
-  legal:       '#e74c3c',
-  political:   '#9b59b6',
-  employment:  '#3498db',
-  adversarial: '#ff5a5a',
-  board:       '#1abc9c',
-  contractual: '#f39c12',
-  influence:   '#8e44ad',
-  personal:    '#7f8c8d',
-}
+// ─── TopBar ───────────────────────────────────────────────────────────────────
 
-// Affiliation swimlane bands (yMin/yMax in timeline_y units)
-const SWIMLANES = [
-  { id: 'lane-city-administration', label: 'City Administration', affiliation: 'city-administration', yMin: 0.4,  yMax: 3.6  },
-  { id: 'lane-pension-board',       label: 'Pension Board',       affiliation: 'pension-board',       yMin: 3.6,  yMax: 7.3  },
-  { id: 'lane-political',           label: 'Political',           affiliation: 'political',           yMin: 7.3,  yMax: 9.5  },
-  { id: 'lane-whistleblower',       label: 'Whistleblowers',      affiliation: 'whistleblower',       yMin: 9.5,  yMax: 11.0 },
-  { id: 'lane-enforcement',         label: 'Enforcement',         affiliation: 'enforcement',         yMin: 11.0, yMax: 13.5 },
-  { id: 'lane-external',            label: 'External / Finance',  affiliation: 'external',            yMin: 13.5, yMax: 15.5 },
+const FONT_OPTIONS = [
+  { value: 'Barlow, sans-serif', label: 'Barlow' },
+  { value: 'Inter, sans-serif',  label: 'Inter' },
+  { value: 'monospace',          label: 'Mono' },
 ]
 
-// ─── Coordinate helpers ────────────────────────────────────────────────────────
-
-function toPixels(timeline_x, timeline_y) {
-  return {
-    x: (timeline_x - X_ORIGIN_YEAR) * YEAR_WIDTH + X_OFFSET,
-    y: timeline_y * LANE_HEIGHT + Y_OFFSET,
-  }
-}
-
-// ─── Custom Node: Entity ──────────────────────────────────────────────────────
-
-function EntityNode({ data, selected }) {
-  const colors = AFFILIATION_COLORS[data.affiliation] || AFFILIATION_COLORS['external']
-  const isEvent = data.type === 'event'
-  const isOrg   = data.type === 'organization'
-
-  const dotStyle = {
-    width:  isEvent ? 9 : isOrg ? 13 : 9,
-    height: isEvent ? 9 : isOrg ? 7  : 9,
-    borderRadius: isOrg ? '2px' : '50%',
-    transform: isEvent ? 'rotate(45deg)' : 'none',
-    backgroundColor: colors.dot,
-    boxShadow: selected
-      ? `0 0 10px 3px ${colors.dot}`
-      : `0 0 5px ${colors.dot}88`,
-    flexShrink: 0,
-  }
-
+function TopBar({
+  investigationLabel,
+  scaleMode,
+  onScaleModeChange,
+  zoom,
+  onFit,
+  focusMode,
+  onToggleFocus,
+  onFocusPrev,
+  onFocusNext,
+  chapters,
+  chapterBounds,
+  activeChapterId,
+  onScrollToChapter,
+  affiliations,
+  fontFamily,
+  onFontChange,
+  pageZoom,
+  onPageZoomIn,
+  onPageZoomOut,
+  theme,
+  isDark,
+  onToggleTheme,
+}) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
-      <Handle type="target" position={Position.Left}  style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
-      <div style={dotStyle} />
-      <div style={{
-        marginTop: 5,
-        fontSize: 9.5,
-        color: selected ? '#fff' : colors.label,
-        whiteSpace: 'nowrap',
-        maxWidth: 130,
-        textAlign: 'center',
-        lineHeight: 1.25,
+    <div
+      style={{
+        height: TOP_BAR_HEIGHT,
+        flexShrink: 0,
+        background: theme.bgPanel,
+        borderBottom: `1px solid ${theme.borderStrong}`,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        padding: '0 14px',
+        userSelect: 'none',
         overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        letterSpacing: '0.03em',
-        textTransform: isEvent ? 'uppercase' : 'none',
-        fontWeight: selected ? 'bold' : 'normal',
-      }}>
-        {data.label}
-      </div>
-    </div>
-  )
-}
-
-// ─── Custom Node: Swimlane background ─────────────────────────────────────────
-
-function SwimlaneNode({ data }) {
-  const colors = AFFILIATION_COLORS[data.affiliation] || {}
-  return (
-    <div style={{
-      width: data.width,
-      height: data.height,
-      background: colors.bg,
-      borderLeft: `2px solid ${colors.border}22`,
-      borderBottom: `1px solid ${colors.border}18`,
-      display: 'flex',
-      alignItems: 'flex-start',
-      paddingTop: 8,
-      paddingLeft: 10,
-      pointerEvents: 'none',
-      userSelect: 'none',
-    }}>
-      <span style={{
-        fontSize: 9,
-        color: colors.border,
-        letterSpacing: '0.12em',
-        textTransform: 'uppercase',
-        opacity: 0.55,
-      }}>
-        {data.label}
-      </span>
-    </div>
-  )
-}
-
-const nodeTypes = {
-  entity:   EntityNode,
-  swimlane: SwimlaneNode,
-}
-
-// ─── Detail panel for selected node ──────────────────────────────────────────
-
-function DetailPanel({ node, onClose }) {
-  if (!node) return null
-  const d = node.data
-  const colors = AFFILIATION_COLORS[d.affiliation] || AFFILIATION_COLORS['external']
-
-  return (
-    <div style={{
-      position: 'absolute',
-      bottom: 24,
-      right: 24,
-      width: 320,
-      background: '#141414',
-      border: `1px solid ${colors.border}66`,
-      borderRadius: 4,
-      padding: '14px 16px',
-      zIndex: 1000,
-      fontFamily: 'monospace',
-      color: '#ccc',
-      boxShadow: `0 0 20px ${colors.border}22`,
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 'bold', color: colors.label, marginBottom: 2 }}>{d.label}</div>
-          <div style={{ fontSize: 9, color: '#555', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-            {d.type} · {d.affiliation}
-          </div>
+      }}
+    >
+      {/* Title */}
+      <div style={{ flexShrink: 0 }}>
+        <div style={{ fontSize: 10, fontWeight: 'bold', letterSpacing: '0.1em', color: theme.textSecondary }}>
+          {investigationLabel?.toUpperCase() ?? 'NARRATIVE STRUCTURES'}
         </div>
-        <button onClick={onClose} style={{
-          background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: 14, padding: 0,
-        }}>✕</button>
       </div>
-      {d.description && (
-        <div style={{ fontSize: 10.5, color: '#999', lineHeight: 1.6, marginBottom: 10 }}>
-          {d.description}
-        </div>
-      )}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        {d.confidence && (
-          <span style={{
-            fontSize: 8.5, padding: '2px 6px', borderRadius: 2,
-            border: `1px solid ${colors.border}55`, color: colors.label,
-            letterSpacing: '0.08em', textTransform: 'uppercase',
-          }}>{d.confidence}</span>
-        )}
-        {(d.tags || []).map(t => (
-          <span key={t} style={{
-            fontSize: 8.5, padding: '2px 6px', borderRadius: 2,
-            border: '1px solid #333', color: '#666',
-          }}>{t}</span>
+
+      <Divider />
+
+      {/* Scale mode */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+        <span style={{ fontSize: 7.5, color: theme.textGhost, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Scale
+        </span>
+        {SCALE_ORDER.map(mode => (
+          <ToolbarButton
+            key={mode}
+            label={SCALE_LABELS[mode]}
+            active={mode === scaleMode}
+            onClick={() => onScaleModeChange(mode)}
+          />
         ))}
       </div>
-    </div>
-  )
-}
 
-// ─── Legend ───────────────────────────────────────────────────────────────────
+      <Divider />
 
-function Legend() {
-  const [open, setOpen] = useState(false)
-  return (
-    <div style={{
-      background: '#111',
-      border: '1px solid #2a2a2a',
-      borderRadius: 4,
-      padding: open ? '12px 14px' : '8px 14px',
-      fontFamily: 'monospace',
-      color: '#888',
-      fontSize: 9.5,
-      cursor: 'pointer',
-      minWidth: 160,
-    }} onClick={() => setOpen(o => !o)}>
-      <div style={{ letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: open ? 10 : 0, color: '#555' }}>
-        Legend {open ? '▲' : '▼'}
+      {/* Focus mode controls */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+        <ToolbarButton label="Focus [F]" active={focusMode} onClick={onToggleFocus} />
+        {focusMode && (
+          <>
+            <ToolbarButton label="←" onClick={onFocusPrev} />
+            <ToolbarButton label="→" onClick={onFocusNext} />
+          </>
+        )}
       </div>
-      {open && (
-        <>
-          <div style={{ marginBottom: 8 }}>
-            {Object.entries(AFFILIATION_COLORS).map(([k, v]) => (
-              <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: v.dot }} />
-                <span style={{ color: v.label, fontSize: 9 }}>{k}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ borderTop: '1px solid #222', paddingTop: 8, marginTop: 4 }}>
-            <div style={{ color: '#555', marginBottom: 6, letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: 8.5 }}>connections</div>
-            {[
-              { label: 'financial', color: CONNECTION_COLOR.financial },
-              { label: 'legal',     color: CONNECTION_COLOR.legal },
-              { label: 'political', color: CONNECTION_COLOR.political },
-              { label: 'employment', color: CONNECTION_COLOR.employment },
-              { label: 'adversarial', color: CONNECTION_COLOR.adversarial },
-            ].map(({ label, color }) => (
-              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-                <div style={{ width: 14, height: 1.5, background: color, opacity: 0.7 }} />
-                <span style={{ color: '#666', fontSize: 9 }}>{label}</span>
-              </div>
-            ))}
-            <div style={{ marginTop: 6, color: '#444', fontSize: 9 }}>
-              — solid = verified<br />
-              – – dashed = reported<br />
-              ·· dotted = alleged
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
 
-// ─── Year axis ruler ──────────────────────────────────────────────────────────
+      <Divider />
 
-function YearAxis() {
-  const years = []
-  for (let y = 1996; y <= 2011; y++) years.push(y)
-  return (
-    <div style={{
-      position: 'absolute',
-      top: Y_OFFSET - 28,
-      left: 0,
-      right: 0,
-      pointerEvents: 'none',
-      zIndex: 0,
-    }}>
-      {years.map(y => (
-        <div key={y} style={{
-          position: 'absolute',
-          left: (y - X_ORIGIN_YEAR) * YEAR_WIDTH + X_OFFSET - 16,
-          fontSize: 9,
-          color: '#2a2a2a',
-          letterSpacing: '0.08em',
-          userSelect: 'none',
-        }}>
-          {y}
+      {/* Zoom controls */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+        <ToolbarButton label="Fit" onClick={onFit} />
+        <span style={{ fontSize: 8, color: theme.textGhost, minWidth: 28, textAlign: 'center' }}>
+          {Math.round(zoom * 100)}%
+        </span>
+      </div>
+
+      <Divider />
+
+      {/* Font picker */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+        <span style={{ fontSize: 7.5, color: theme.textGhost, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Font
+        </span>
+        <select
+          value={fontFamily}
+          onChange={e => onFontChange(e.target.value)}
+          style={{
+            background: theme.bgPanel,
+            color: theme.textVeryDim,
+            border: `1px solid ${theme.borderSoft}`,
+            borderRadius: 2,
+            fontSize: 8.5,
+            padding: '2px 4px',
+            cursor: 'pointer',
+          }}
+        >
+          {FONT_OPTIONS.map(opt => (
+            <option key={opt.value} value={opt.value} style={{ background: theme.bgPanel, color: theme.textPrimary }}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <Divider />
+
+      {/* Page (UI) zoom controls */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+        <span style={{ fontSize: 7.5, color: theme.textGhost, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          UI
+        </span>
+        <ToolbarButton label="−" onClick={onPageZoomOut} />
+        <span style={{ fontSize: 8, color: theme.textGhost, minWidth: 28, textAlign: 'center' }}>
+          {Math.round(pageZoom * 100)}%
+        </span>
+        <ToolbarButton label="+" onClick={onPageZoomIn} />
+      </div>
+
+      <Divider />
+
+      {/* Chapter tabs */}
+      {chapters.length > 0 && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', flex: 1 }}>
+          {[...chapters].sort((a, b) => a.order - b.order).map(ch => {
+            const bounds = chapterBounds.get(ch.id)
+            const isActive = ch.id === activeChapterId
+            return (
+              <button
+                key={ch.id}
+                onClick={() => onScrollToChapter(ch.id)}
+                disabled={!bounds}
+                style={{
+                  padding: '2px 8px',
+                  fontSize: 8,
+                  letterSpacing: '0.04em',
+                  cursor: bounds ? 'pointer' : 'default',
+                  background: isActive ? `${ch.color}22` : 'transparent',
+                  color: isActive ? ch.color : theme.textVeryDim,
+                  border: `1px solid ${isActive ? `${ch.color}55` : theme.borderMid}`,
+                  borderRadius: 2,
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {ch.label}
+              </button>
+            )
+          })}
         </div>
-      ))}
+      )}
+
+      {/* Theme toggle + Legend pushed to far right */}
+      <div style={{ marginLeft: 'auto', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+        <ToolbarButton label={isDark ? '☀' : '☾'} onClick={onToggleTheme} />
+        <Legend affiliations={affiliations} theme={theme} />
+      </div>
     </div>
   )
 }
 
-// ─── Build graph data ─────────────────────────────────────────────────────────
-
-function buildGraph() {
-  // Calculate canvas dimensions
-  const xs = entitiesRaw.filter(e => e.timeline_x).map(e => e.timeline_x)
-  const maxYear = Math.max(...xs)
-  const totalWidth = (maxYear - X_ORIGIN_YEAR + 2) * YEAR_WIDTH + X_OFFSET + 200
-
-  // Swimlane background nodes (rendered behind everything)
-  const swimlaneNodes = SWIMLANES.map(lane => ({
-    id: lane.id,
-    type: 'swimlane',
-    position: {
-      x: 0,
-      y: lane.yMin * LANE_HEIGHT + Y_OFFSET,
-    },
-    data: {
-      label: lane.label,
-      affiliation: lane.affiliation,
-      width: totalWidth,
-      height: (lane.yMax - lane.yMin) * LANE_HEIGHT,
-    },
-    selectable: false,
-    draggable: false,
-    connectable: false,
-    focusable: false,
-    zIndex: -1,
-  }))
-
-  // Entity nodes
-  const entityNodes = entitiesRaw
-    .filter(e => e.timeline_x && e.timeline_y)
-    .map(entity => {
-      const pos = toPixels(entity.timeline_x, entity.timeline_y)
-      return {
-        id: entity.id,
-        type: 'entity',
-        position: pos,
-        data: {
-          label: entity.label,
-          type: entity.type,
-          affiliation: entity.affiliation,
-          description: entity.description,
-          confidence: entity.confidence,
-          tags: entity.tags || [],
-          role: entity.role,
-        },
-        draggable: true,
-        zIndex: 10,
-      }
-    })
-
-  // Edges from relationships
-  const edges = relationshipsRaw.map(rel => {
-    const edgeStyle = CONNECTION_STYLE[rel.confidence] || CONNECTION_STYLE.reported
-    const color = CONNECTION_COLOR[rel.type] || '#555'
-    return {
-      id: rel.id,
-      source: rel.from,
-      target: rel.to,
-      type: 'default',
-      animated: false,
-      label: undefined, // skip labels for cleanliness; show on hover later
-      style: {
-        stroke: color,
-        strokeWidth: edgeStyle.strokeWidth,
-        strokeDasharray: edgeStyle.strokeDasharray,
-        opacity: edgeStyle.opacity,
-      },
-      markerEnd: rel.direction === 'directed'
-        ? { type: MarkerType.ArrowClosed, color, width: 8, height: 8 }
-        : undefined,
-      data: {
-        label: rel.label,
-        type: rel.type,
-        confidence: rel.confidence,
-        description: rel.description,
-      },
-    }
-  })
-
-  return { nodes: [...swimlaneNodes, ...entityNodes], edges }
+function Divider() {
+  const { theme } = useTheme()
+  return <div style={{ width: 1, height: 24, background: theme.borderMid, flexShrink: 0 }} />
 }
 
-// ─── Root App ─────────────────────────────────────────────────────────────────
+function ToolbarButton({ label, active, onClick }) {
+  const { theme } = useTheme()
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: '3px 8px',
+        fontSize: 8.5,
+        letterSpacing: '0.06em',
+        cursor: 'pointer',
+        background: active ? theme.bgSubtle : 'transparent',
+        color: active ? theme.accent : theme.textVeryDim,
+        border: `1px solid ${active ? theme.accentBorder : theme.borderSoft}`,
+        borderRadius: 2,
+      }}
+    >
+      {label}
+    </button>
+  )
+}
+
+// ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const { nodes: initialNodes, edges: initialEdges } = useMemo(() => buildGraph(), [])
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  const [selectedNode, setSelectedNode] = useState(null)
+  const { data } = useInvestigation()
 
-  const onNodeClick = useCallback((_, node) => {
-    if (node.type === 'swimlane') return
-    setSelectedNode(node)
+  // ── Font family ──────────────────────────────────────────────────────────────
+  const [fontFamily, setFontFamily] = useState(
+    () => localStorage.getItem('ns-font') ?? 'Barlow, sans-serif'
+  )
+  const handleFontChange = useCallback((value) => {
+    setFontFamily(value)
+    localStorage.setItem('ns-font', value)
   }, [])
 
-  const onPaneClick = useCallback(() => {
-    setSelectedNode(null)
+  // ── Page (UI) zoom ───────────────────────────────────────────────────────────
+  const [pageZoom, setPageZoom] = useState(() => {
+    const saved = parseFloat(localStorage.getItem('ns-page-zoom'))
+    return isNaN(saved) ? 1.0 : Math.max(PAGE_ZOOM_MIN, Math.min(PAGE_ZOOM_MAX, saved))
+  })
+  useEffect(() => {
+    document.documentElement.style.zoom = pageZoom
+    localStorage.setItem('ns-page-zoom', pageZoom)
+  }, [pageZoom])
+  const handlePageZoomIn = useCallback(
+    () => setPageZoom(z => Math.min(PAGE_ZOOM_MAX, parseFloat((z + PAGE_ZOOM_STEP).toFixed(2)))),
+    [],
+  )
+  const handlePageZoomOut = useCallback(
+    () => setPageZoom(z => Math.max(PAGE_ZOOM_MIN, parseFloat((z - PAGE_ZOOM_STEP).toFixed(2)))),
+    [],
+  )
+
+  // ── Scale mode ───────────────────────────────────────────────────────────────
+  const [scaleMode, setScaleMode] = useState(null)  // null = auto-detect
+
+  const layout = useMemo(
+    () => computeLayout(data, scaleMode ? { scaleMode } : {}),
+    [data, scaleMode]
+  )
+
+  // ── Selection state ──────────────────────────────────────────────────────────
+  const [selectedEventId, setSelectedEventId] = useState(null)
+  const [selectedEntityId, setSelectedEntityId] = useState(null)
+
+  const handleSelectEvent = useCallback((eventId) => {
+    setSelectedEventId(eventId)
+    setSelectedEntityId(null)
   }, [])
 
+  const handleSelectEntity = useCallback((entityId) => {
+    setSelectedEntityId(prev => prev === entityId ? null : entityId)
+  }, [])
+
+  const handleDismiss = useCallback(() => {
+    setSelectedEventId(null)
+    setSelectedEntityId(null)
+  }, [])
+
+  // ── Zoom ─────────────────────────────────────────────────────────────────────
+  const [zoom, setZoom] = useState(1)
+  const zoomRef = useRef(1)
+  useEffect(() => { zoomRef.current = zoom }, [zoom])
+
+  const scrollRef = useRef(null)
+
+  // Ctrl+scroll → zoom toward cursor (passive:false required for preventDefault)
+  useEffect(() => {
+    const container = scrollRef.current
+    if (!container) return
+
+    function handleWheel(e) {
+      if (!e.ctrlKey && !e.metaKey) return
+      e.preventDefault()
+
+      const currentZoom = zoomRef.current
+      const direction = e.deltaY > 0 ? -1 : 1
+      const scaledDelta = Math.min(Math.abs(e.deltaY), ZOOM_DELTA_CAP) * ZOOM_DELTA_SCALE
+      const newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, currentZoom * (1 + direction * scaledDelta)))
+
+      // Zoom toward cursor: keep the content point under the mouse at the same screen position
+      const rect = container.getBoundingClientRect()
+      const mouseX = e.clientX - rect.left
+      const mouseY = e.clientY - rect.top
+      const ratio = newZoom / currentZoom
+
+      const newScrollLeft = (mouseX + container.scrollLeft - LEFT_PANEL_WIDTH) * ratio + LEFT_PANEL_WIDTH - mouseX
+      const newScrollTop  = (mouseY + container.scrollTop) * ratio - mouseY
+
+      setZoom(newZoom)
+      requestAnimationFrame(() => {
+        container.scrollLeft = Math.max(0, newScrollLeft)
+        container.scrollTop  = Math.max(0, newScrollTop)
+      })
+    }
+
+    container.addEventListener('wheel', handleWheel, { passive: false })
+    return () => container.removeEventListener('wheel', handleWheel)
+  }, [])
+
+  const handleFit = useCallback(() => {
+    const container = scrollRef.current
+    if (!container) return
+    const svgWidth = layout.canvasWidth + CANVAS_X_PADDING
+    const availWidth = container.clientWidth - LEFT_PANEL_WIDTH
+    const newZoom = Math.min(1, availWidth / svgWidth)
+    setZoom(newZoom)
+    requestAnimationFrame(() => {
+      container.scrollLeft = 0
+      container.scrollTop = 0
+    })
+  }, [layout.canvasWidth])
+
+  // ── Focus mode ───────────────────────────────────────────────────────────────
+  const [focusMode, setFocusMode] = useState(false)
+  const [focusedEventId, setFocusedEventId] = useState(null)
+
+  // Sorted event IDs (in chronological order, matching eventZones insertion order)
+  const sortedEventIds = useMemo(() => [...layout.eventZones.keys()], [layout.eventZones])
+
+  // Toggle focus mode, initialising focusedEventId on entry
+  const toggleFocusMode = useCallback(() => {
+    setFocusMode(prev => {
+      if (!prev) {
+        // Entering focus mode: set to current or first event
+        setFocusedEventId(curr => curr ?? sortedEventIds[0] ?? null)
+      }
+      return !prev
+    })
+  }, [sortedEventIds])
+
+  // Auto-scroll to focused event
+  useEffect(() => {
+    if (!focusMode || !focusedEventId || !scrollRef.current) return
+    const zone = layout.eventZones.get(focusedEventId)
+    if (!zone) return
+    const container = scrollRef.current
+    const containerWidth = container.clientWidth - LEFT_PANEL_WIDTH
+    const targetScrollLeft = (zone.centerX + CANVAS_X_PADDING) * zoom - containerWidth / 2
+    container.scrollTo({ left: Math.max(0, targetScrollLeft), behavior: 'smooth' })
+  }, [focusedEventId, focusMode, layout.eventZones, zoom])
+
+  const focusPrev = useCallback(() => {
+    setFocusedEventId(curr => {
+      const idx = sortedEventIds.indexOf(curr)
+      return sortedEventIds[Math.max(0, idx - 1)] ?? curr
+    })
+  }, [sortedEventIds])
+
+  const focusNext = useCallback(() => {
+    setFocusedEventId(curr => {
+      const idx = sortedEventIds.indexOf(curr)
+      return sortedEventIds[Math.min(sortedEventIds.length - 1, idx + 1)] ?? curr
+    })
+  }, [sortedEventIds])
+
+  // Keyboard handler: F, Escape, Arrow keys
+  useEffect(() => {
+    function onKey(e) {
+      // Don't intercept when typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return
+
+      if (e.key === 'f' || e.key === 'F') {
+        toggleFocusMode()
+        return
+      }
+      if (e.key === 'Escape') {
+        setFocusMode(false)
+        return
+      }
+      if (focusMode) {
+        if (e.key === 'ArrowRight') { e.preventDefault(); focusNext() }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); focusPrev() }
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [focusMode, focusNext, focusPrev, toggleFocusMode])
+
+  // ── Chapter navigation ───────────────────────────────────────────────────────
+  const [activeChapterId, setActiveChapterId] = useState(null)
+
+  const handleScroll = useCallback(() => {
+    const container = scrollRef.current
+    if (!container) return
+    const canvasX = container.scrollLeft / zoom - CANVAS_X_PADDING
+
+    let found = null
+    for (const [id, bounds] of layout.chapterBounds) {
+      if (canvasX >= bounds.x - 40 && canvasX <= bounds.x + bounds.width) {
+        found = id
+        break
+      }
+    }
+    setActiveChapterId(found)
+  }, [layout.chapterBounds, zoom])
+
+  const handleScrollToChapter = useCallback((chapterId) => {
+    const bounds = layout.chapterBounds.get(chapterId)
+    if (!bounds || !scrollRef.current) return
+    const targetScrollLeft = (bounds.x + CANVAS_X_PADDING) * zoom
+    scrollRef.current.scrollTo({ left: Math.max(0, targetScrollLeft), behavior: 'smooth' })
+  }, [layout.chapterBounds, zoom])
+
+  // ── Selection for detail panel ───────────────────────────────────────────────
+  const selection = useMemo(() => {
+    if (focusMode && focusedEventId) return { type: 'event', eventId: focusedEventId }
+    if (selectedEntityId) return { type: 'entity', entityId: selectedEntityId }
+    if (selectedEventId) return { type: 'event', eventId: selectedEventId }
+    return null
+  }, [focusMode, focusedEventId, selectedEntityId, selectedEventId])
+
+  // ── Theme ────────────────────────────────────────────────────────────────────
+  const { theme, isDark, toggleTheme } = useTheme()
+
+  // ── Render ───────────────────────────────────────────────────────────────────
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#0d0d0d', position: 'relative' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        nodeTypes={nodeTypes}
-        onNodeClick={onNodeClick}
-        onPaneClick={onPaneClick}
-        fitView
-        fitViewOptions={{ padding: 0.08 }}
-        minZoom={0.05}
-        maxZoom={4}
-        defaultEdgeOptions={{ type: 'default' }}
-        proOptions={{ hideAttribution: true }}
+    <div
+      style={{
+        width: '100vw',
+        height: '100vh',
+        background: theme.bgApp,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        fontFamily,
+      }}
+    >
+      {/* Top bar */}
+      <TopBar
+        investigationLabel={data.manifest?.label}
+        scaleMode={layout.scaleMode}
+        onScaleModeChange={setScaleMode}
+        zoom={zoom}
+        onFit={handleFit}
+        focusMode={focusMode}
+        onToggleFocus={toggleFocusMode}
+        onFocusPrev={focusPrev}
+        onFocusNext={focusNext}
+        chapters={data.chapters ?? []}
+        chapterBounds={layout.chapterBounds}
+        activeChapterId={activeChapterId}
+        onScrollToChapter={handleScrollToChapter}
+        affiliations={data.affiliations ?? []}
+        fontFamily={fontFamily}
+        onFontChange={handleFontChange}
+        pageZoom={pageZoom}
+        onPageZoomIn={handlePageZoomIn}
+        onPageZoomOut={handlePageZoomOut}
+        theme={theme}
+        isDark={isDark}
+        onToggleTheme={toggleTheme}
+      />
+
+      {/* Scrollable area: swimlane panel (sticky) + timeline SVG */}
+      <div
+        ref={scrollRef}
+        onScroll={handleScroll}
+        style={{
+          flex: 1,
+          overflow: 'auto',
+          display: 'flex',
+          background: theme.bgApp,
+        }}
       >
-        <Background color="#1a1a1a" gap={YEAR_WIDTH} size={1} />
-        <Controls
-          showInteractive={false}
-          style={{ bottom: 24, left: 24, top: 'auto' }}
-        />
-        <MiniMap
-          style={{ background: '#0d0d0d', border: '1px solid #1e1e1e' }}
-          maskColor="rgba(0,0,0,0.7)"
-          nodeColor={(n) => {
-            if (n.type === 'swimlane') return 'transparent'
-            return AFFILIATION_COLORS[n.data?.affiliation]?.dot || '#555'
+        {/* Sticky left panel — scaled via inner wrapper so scroll area size is correct */}
+        <div
+          style={{
+            width: LEFT_PANEL_WIDTH,
+            height: layout.canvasHeight * zoom,
+            flexShrink: 0,
+            position: 'sticky',
+            left: 0,
+            zIndex: 20,
+            background: theme.bgApp,
+            borderRight: `1px solid ${theme.borderStrong}`,
+            overflow: 'hidden',
           }}
-          nodeStrokeWidth={0}
-        />
-
-        {/* Title */}
-        <Panel position="top-left">
-          <div style={{
-            background: 'rgba(13,13,13,0.92)',
-            border: '1px solid #1e1e1e',
-            borderRadius: 3,
-            padding: '12px 16px',
-            fontFamily: 'monospace',
-          }}>
-            <div style={{ fontSize: 13, letterSpacing: '0.14em', color: '#ddd', fontWeight: 'bold' }}>
-              SAN DIEGO PENSION CRISIS
-            </div>
-            <div style={{ fontSize: 9, color: '#444', marginTop: 3, letterSpacing: '0.08em' }}>
-              1996 – 2010 · Narrative Structures
-            </div>
+        >
+          <div
+            style={{
+              transformOrigin: '0 0',
+              transform: `scale(${zoom})`,
+              width: LEFT_PANEL_WIDTH,
+              height: layout.canvasHeight,
+            }}
+          >
+            <SwimlanePanel
+              rows={layout.rows}
+              groupBands={layout.groupBands}
+              canvasHeight={layout.canvasHeight}
+              onEntityClick={handleSelectEntity}
+            />
           </div>
-        </Panel>
+        </div>
 
-        {/* Legend */}
-        <Panel position="top-right">
-          <Legend />
-        </Panel>
-      </ReactFlow>
+        {/* Timeline canvas */}
+        <div style={{ flexShrink: 0 }}>
+          <TimelineCanvas
+            layout={layout}
+            events={data.events}
+            relationships={data.relationships}
+            zoom={zoom}
+            selectedEventId={selectedEventId}
+            selectedEntityId={selectedEntityId}
+            onSelectEvent={handleSelectEvent}
+            onSelectEntity={handleSelectEntity}
+            focusMode={focusMode}
+            focusedEventId={focusedEventId}
+            fontFamily={fontFamily}
+          />
+        </div>
+      </div>
 
-      {/* Detail panel outside ReactFlow to avoid z-index issues */}
-      {selectedNode && (
-        <DetailPanel node={selectedNode} onClose={() => setSelectedNode(null)} />
-      )}
+      {/* Detail panel (slide-up from bottom) */}
+      <DetailPanel
+        selection={selection}
+        data={data}
+        onDismiss={handleDismiss}
+        onSelectEvent={handleSelectEvent}
+      />
     </div>
   )
 }

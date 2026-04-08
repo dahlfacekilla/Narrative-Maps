@@ -1,0 +1,8 @@
+[
+  { "id": "city-administration", "label": "City Administration", "color": "#4a90d9", "order": 1 },
+  { "id": "pension-board", "label": "Pension Board", "color": "#e67e22", "order": 2 },
+  { "id": "political", "label": "Political", "color": "#9b59b6", "order": 3 },
+  { "id": "whistleblower", "label": "Whistleblowers", "color": "#27ae60", "order": 4 },
+  { "id": "enforcement", "label": "Enforcement", "color": "#e74c3c", "order": 5 },
+  { "id": "external", "label": "External / Finance", "color": "#888888", "order": 6 }
+]
